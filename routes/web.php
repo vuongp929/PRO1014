@@ -41,3 +41,4 @@ Route::resource('sinhviens',            AdminsSinhVienController::class);
 Route::resource('nhanviens',            AdminsNhanVienController::class);
 
 
+

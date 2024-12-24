@@ -17,7 +17,6 @@
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between bg-galaxy-transparent">
                     <h4 class="mb-sm-0">Quản lý sản phẩm</h4>
-
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
@@ -37,15 +36,19 @@
                     <div class="card">
                         <div class="card-header align-items-center d-flex">
                             <h4 class="card-title mb-0 flex-grow-1">Danh sách sản phẩm</h4>
+
                             <a href="{{ route('sanphams.create') }}" class="btn btn-soft-success material-shadow-none">
+
+                            <a href="?act=form-them-danh-muc" class="btn btn-soft-success material-shadow-none">
+
                                 <i class="ri-add-circle-line align-middle me-1"></i>
                                 Thêm sản phẩm
                             </a>
                         </div><!-- end card header -->
-
                         <div class="card-body">
                             <div class="live-preview">
                                 <div class="table-responsive">
+
                                     @if (session('success'))
                                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                                             <strong> {{ session('success') }} </strong>
@@ -62,11 +65,11 @@
                                         </div>
                                     @endif
 
-
                                     <table class="table table-striped table-nowrap align-middle mb-0">
                                         <thead>
                                             <tr>
                                                 <th scope="col">STT</th>
+
                                                 <th scope="col">Mã sản phẩm</th>
                                                 <th scope="col">Hình ảnh</th>
                                                 <th scope="col">Tên sản phẩm</th>
@@ -77,6 +80,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+
                                             @foreach ($listSanPham as $index => $SanPham)
                                                 <tr>
                                                     <td>{{ $index + 1 }}</td>
@@ -117,6 +121,11 @@
                                     <div class="mt-3">
                                         {{ $listSanPham->links('pagination::bootstrap-5') }}
                                     </div>
+
+                                            
+                                        </tbody>
+                                    </table>
+
                                 </div>
                             </div>
 
@@ -132,4 +141,6 @@
 @endsection
 
 @section('JS')
+
 @endsection
+

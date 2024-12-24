@@ -20,5 +20,4 @@ class DanhMucSeeder extends Seeder
             ]);
         }
     }
-    
 }

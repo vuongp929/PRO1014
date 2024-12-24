@@ -9,13 +9,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class AdminSanPhamController extends Controller
+
+class AdminSanPhamController extends Controller 
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+
         // Lấy ra toàn bộ dữ liệu
         // $listSanPham = DB::table('san_phams')->orderByDesc('id')->paginate(5);
 
@@ -26,6 +28,8 @@ class AdminSanPhamController extends Controller
         // dd($listSanPham);
 
         return view('admins.sanphams.index', compact('listSanPham'));
+
+
     }
 
     /**
@@ -33,12 +37,17 @@ class AdminSanPhamController extends Controller
      */
     public function create()
     {
+
         return view('admins.sanphams.create');
+
+        //
+
     }
 
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(AdminSanPhamRequest $request)
     {
         // dd($request->all());
@@ -84,6 +93,7 @@ class AdminSanPhamController extends Controller
         }
     }
 
+
     /**
      * Display the specified resource.
      */
@@ -97,6 +107,7 @@ class AdminSanPhamController extends Controller
      */
     public function edit(string $id)
     {
+
         // Lấy ra dữ liệu của sản phẩm cần sửa
         $sanPham = DB::table('san_phams')->find($id);
 
@@ -108,11 +119,15 @@ class AdminSanPhamController extends Controller
 
         // Hiển thị giao diện sửa dữ liệu
         return view('admins.sanphams.edit', compact('sanPham'));
+
+        //
+
     }
 
     /**
      * Update the specified resource in storage.
      */
+
     public function update(AdminSanPhamRequest $request, string $id)
     {
         DB::beginTransaction();
@@ -169,11 +184,13 @@ class AdminSanPhamController extends Controller
         }
     }
 
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
+
         // Lấy lại thông tin của sản phẩm cần xóa
         // Sử dụng query builder
         // $sanPham = DB::table('san_phams')->find($id);
@@ -210,3 +227,9 @@ class AdminSanPhamController extends Controller
             ->with('error', 'Có lỗi xảy ra khi xóa sản phẩm. Vui lòng thử lại sau!');
     }
 }
+
+
+       //
+    
+
+
