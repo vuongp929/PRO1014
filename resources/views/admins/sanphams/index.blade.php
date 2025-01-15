@@ -1,5 +1,5 @@
 {{-- Để kế thừa lại master layout ta sử dụng extends --}}
-@extends('layouts.admin')
+@extends('layouts.client')
 {{-- Một file chỉ được kế thừa 1 master layout --}}
 
 @section('title')
@@ -69,9 +69,8 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">STT</th>
-
                                                 <th scope="col">Mã sản phẩm</th>
-                                                <th scope="col">Hình ảnh</th>
+                                                <th scope="col">sc ảnh</th>
                                                 <th scope="col">Tên sản phẩm</th>
                                                 <th scope="col">Giá sản phẩm</th>
                                                 <th scope="col">Giá khuyến mãi</th>

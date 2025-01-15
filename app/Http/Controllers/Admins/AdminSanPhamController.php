@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admins;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use App\Http\Requests\AdminSanPhamRequest;
 use App\Models\SanPham;
 use Illuminate\Http\Request;
@@ -22,7 +22,7 @@ class AdminSanPhamController extends Controller
         // $listSanPham = DB::table('san_phams')->orderByDesc('id')->paginate(5);
 
         // Sử dụng Eloquent khi muốn sử dụng xóa mềm
-        $listSanPham = SanPham::orderByDesc('id')->paginate(5);
+        $listSanPham = SanPham::orderByDesc('id')->paginate(perPage: 5);
 
         // Kết quả trả ra là một mảng các đối tượng
         // dd($listSanPham);
