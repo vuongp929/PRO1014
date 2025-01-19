@@ -12,9 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id(); // Khóa chính
+            $table->string('name'); // Tên sản phẩm
+            $table->string('code')->unique(); // Mã sản phẩm duy nhất
+            $table->string('image')->nullable(); //
+            $table->text('description')->nullable(); // Mô tả sản phẩm
+            $table->timestamps(); // Thời gian tạo và cập nhật
         });
+        
     }
 
     /**

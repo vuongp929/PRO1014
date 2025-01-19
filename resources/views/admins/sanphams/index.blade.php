@@ -1,5 +1,5 @@
 {{-- Để kế thừa lại master layout ta sử dụng extends --}}
-@extends('layouts.client')
+@extends('layouts.admin')
 {{-- Một file chỉ được kế thừa 1 master layout --}}
 
 @section('title')

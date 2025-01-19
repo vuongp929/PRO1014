@@ -2,70 +2,172 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use Illuminate\Routing\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
-use Illuminate\Routing\Controller;
-use Illuminate\Http\Request;
+use App\Models\Product;
+use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-
 
 class ProductController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Hiển thị danh sách sản phẩm.
      */
     public function index()
     {
-        //
+        // Lấy danh sách sản phẩm, sắp xếp theo ID giảm dần, phân trang
+        $products = Product::orderByDesc('id')->paginate(5);
+        return view('admins.products.index', compact('products'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Hiển thị form tạo sản phẩm mới.
      */
     public function create()
     {
-        //
+        return view('admins.products.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Lưu thông tin sản phẩm mới vào cơ sở dữ liệu.
      */
     public function store(StoreProductRequest $request)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            // Xử lý ảnh
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('uploads/products', 'public');
+            }
+
+            // Thêm sản phẩm mới
+            $product = Product::create([
+                'code' => $request->input('code'),
+                'name' => $request->input('name'),
+                'price' => $request->input('price'),
+                'description' => $request->input('description'),
+                'stock' => $request->input('stock'),
+                'category_id' => $request->input('category_id'),
+                'image' => $imagePath,
+            ]);
+
+            // Thêm các biến thể nếu có
+            if ($request->has('variants')) {
+                foreach ($request->input('variants') as $variant) {
+                    ProductVariant::create([
+                        'product_id' => $product->id,
+                        'size' => $variant['size'],
+                        'price' => $variant['price'],
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('products.index')->with('success', 'Thêm sản phẩm thành công!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('products.index')->with('error', 'Có lỗi xảy ra khi thêm sản phẩm.');
+        }
     }
 
     /**
-     * Display the specified resource.
+     * Hiển thị form chỉnh sửa sản phẩm.
      */
-    public function show(Product $product)
+    public function edit($id)
     {
-        //
+        $product = Product::with('variants')->find($id);
+
+        if (!$product) {
+            return redirect()->route('products.index')->with('error', 'Sản phẩm không tồn tại.');
+        }
+
+        return view('admins.products.edit', compact('product'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Cập nhật thông tin sản phẩm.
      */
-    public function edit(Product $product)
+    public function update(UpdateProductRequest $request, $id)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $product = Product::find($id);
+
+            if (!$product) {
+                return redirect()->route('products.index')->with('error', 'Sản phẩm không tồn tại.');
+            }
+
+            // Xử lý ảnh
+            $imagePath = $product->image; // Giữ ảnh cũ nếu không có ảnh mới
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('uploads/products', 'public');
+                if ($product->image && Storage::disk('public')->exists($product->image)) {
+                    Storage::disk('public')->delete($product->image);
+                }
+            }
+
+            // Cập nhật sản phẩm
+            $product->update([
+                'name' => $request->input('name'),
+                'price' => $request->input('price'),
+                'description' => $request->input('description'),
+                'stock' => $request->input('stock'),
+                'category_id' => $request->input('category_id'),
+                'image' => $imagePath,
+            ]);
+
+            // Cập nhật các biến thể
+            $existingVariants = collect($request->input('variants', []));
+            $product->variants()->delete(); // Xóa hết các biến thể cũ
+
+            foreach ($existingVariants as $variant) {
+                $product->variants()->create([
+                    'size' => $variant['size'],
+                    'price' => $variant['price'],
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->route('products.index')->with('success', 'Cập nhật sản phẩm thành công!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('products.index')->with('error', 'Có lỗi xảy ra khi cập nhật sản phẩm.');
+        }
     }
 
     /**
-     * Update the specified resource in storage.
+     * Xóa sản phẩm.
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function destroy($id)
     {
-        //
-    }
+        DB::beginTransaction();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Product $product)
-    {
-        //
+        try {
+            $product = Product::find($id);
+
+            if (!$product) {
+                return redirect()->route('products.index')->with('error', 'Sản phẩm không tồn tại.');
+            }
+
+            // Xóa ảnh
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
+            }
+
+            // Xóa sản phẩm và các biến thể
+            $product->variants()->delete();
+            $product->delete();
+
+            DB::commit();
+            return redirect()->route('products.index')->with('success', 'Xóa sản phẩm thành công!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('products.index')->with('error', 'Có lỗi xảy ra khi xóa sản phẩm.');
+        }
     }
 }

@@ -20,11 +20,8 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         // Muốn chạy những seeder nào thì bắt buộc phải điền nó ở đây
-        $this->call([
-            DanhMucSeeder::class
-        ]);
 
-        $this->call(SinhVienSeeder::class);
+        $this->call(ProductSeeder::class);
 
     }
 }
