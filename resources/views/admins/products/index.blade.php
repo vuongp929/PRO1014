@@ -61,7 +61,8 @@
                                         <th>Mã sản phẩm</th>
                                         <th>Hình ảnh</th>
                                         <th>Tên sản phẩm</th>
-                                        <th>Biến thể</th>
+                                        <th>Danh Mục</th>
+                                        <th>Size và Giá</th>
                                         <th>Trạng thái</th>
                                         <th>Hành động</th>
                                     </tr>
@@ -75,6 +76,11 @@
                                                 <img src="{{ Storage::url($product->image) }}" class="img-thumbnail" width="100px" alt="Hình ảnh">
                                             </td>
                                             <td>{{ $product->name }}</td>
+                                            <td>
+                                                @foreach ($product->categories as $category)
+                                                    <span class="badge bg-primary">{{ $category->name }}</span>
+                                                @endforeach
+                                            </td>
                                             <td>
                                                 @foreach ($product->variants as $variant)
                                                     <div>

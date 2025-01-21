@@ -13,7 +13,7 @@ class Category extends Model
     protected $table = 'categories';
 
     // Các thuộc tính có thể gán (fillable)
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name', 'slug'];
 
     /**
      * Mối quan hệ với Product (Nhiều category chứa nhiều product thông qua bảng product_category).

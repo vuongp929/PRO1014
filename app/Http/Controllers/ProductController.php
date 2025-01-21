@@ -6,8 +6,10 @@ use Illuminate\Routing\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
+use App\Models\Category;
 use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -18,7 +20,7 @@ class ProductController extends Controller
     public function index()
     {
         // Lấy danh sách sản phẩm, sắp xếp theo ID giảm dần, phân trang
-        $products = Product::orderByDesc('id')->paginate(5);
+        $products = Product::with('categories')->orderByDesc('id')->paginate(5);
         return view('admins.products.index', compact('products'));
     }
 
@@ -27,52 +29,63 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('admins.products.create');
+        $categories = Category::all();  // Lấy tất cả danh mục
+        return view('admins.products.create', compact('categories'));  // Truyền danh mục vào view
     }
 
     /**
      * Lưu thông tin sản phẩm mới vào cơ sở dữ liệu.
      */
     public function store(StoreProductRequest $request)
-    {
-        DB::beginTransaction();
+{
+    DB::beginTransaction();
 
-        try {
-            // Xử lý ảnh
-            $imagePath = null;
-            if ($request->hasFile('image')) {
-                $imagePath = $request->file('image')->store('uploads/products', 'public');
-            }
-
-            // Thêm sản phẩm mới
-            $product = Product::create([
-                'code' => $request->input('code'),
-                'name' => $request->input('name'),
-                'price' => $request->input('price'),
-                'description' => $request->input('description'),
-                'stock' => $request->input('stock'),
-                'category_id' => $request->input('category_id'),
-                'image' => $imagePath,
-            ]);
-
-            // Thêm các biến thể nếu có
-            if ($request->has('variants')) {
-                foreach ($request->input('variants') as $variant) {
-                    ProductVariant::create([
-                        'product_id' => $product->id,
-                        'size' => $variant['size'],
-                        'price' => $variant['price'],
-                    ]);
-                }
-            }
-
-            DB::commit();
-            return redirect()->route('products.index')->with('success', 'Thêm sản phẩm thành công!');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->route('products.index')->with('error', 'Có lỗi xảy ra khi thêm sản phẩm.');
+    try {
+        $code = $request->input('code', strtoupper(Str::random(4)));
+        // Xử lý ảnh
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = Storage::put('uploads/products', $request->file('image'));
         }
+
+        // Thêm sản phẩm mới
+        $product = Product::create([
+            'code' => $request->input('code'),
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'image' => $imagePath,
+        ]);
+
+        // Lưu danh mục sản phẩm
+        if ($request->has('category_ids')) {
+            $product->categories()->sync($request->input('category_ids'));
+        }
+
+        // Lưu các biến thể
+        if ($request->has('variants')) {
+            foreach ($request->input('variants') as $variant) {
+                ProductVariant::create([
+                    'product_id' => $product->id,
+                    'size' => $variant['size'],
+                    'price' => $variant['price'],
+                    'stock' => $variant['stock'] ?? 0,  // Sử dụng stock từ form, nếu không có, gán giá trị mặc định 0
+                ]);
+            }
+        }
+        
+
+        DB::commit();
+        return redirect()->route('products.index')->with('success', 'Thêm sản phẩm thành công!');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        // In chi tiết lỗi để dễ dàng debug
+        dd($e->getMessage(), $e->getTraceAsString());
+
+        return redirect()->route('products.index')->with('error', 'Có lỗi xảy ra khi thêm sản phẩm.');
     }
+}
+
+
 
     /**
      * Hiển thị form chỉnh sửa sản phẩm.
@@ -103,7 +116,7 @@ class ProductController extends Controller
             }
 
             // Xử lý ảnh
-            $imagePath = $product->image; // Giữ ảnh cũ nếu không có ảnh mới
+            $imagePath = $product->image;
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('uploads/products', 'public');
                 if ($product->image && Storage::disk('public')->exists($product->image)) {
@@ -117,19 +130,25 @@ class ProductController extends Controller
                 'price' => $request->input('price'),
                 'description' => $request->input('description'),
                 'stock' => $request->input('stock'),
-                'category_id' => $request->input('category_id'),
                 'image' => $imagePath,
             ]);
 
-            // Cập nhật các biến thể
-            $existingVariants = collect($request->input('variants', []));
-            $product->variants()->delete(); // Xóa hết các biến thể cũ
+            // Cập nhật danh mục
+            if ($request->has('category_ids')) {
+                $product->categories()->sync($request->input('category_ids'));
+            }
 
-            foreach ($existingVariants as $variant) {
-                $product->variants()->create([
-                    'size' => $variant['size'],
-                    'price' => $variant['price'],
-                ]);
+            // Cập nhật biến thể
+            $product->variants()->delete(); // Xóa tất cả biến thể cũ
+            if ($request->has('variants')) {
+                foreach ($request->input('variants') as $variant) {
+                    $product->variants()->create([
+                        'size' => $variant['size'],
+                        'color' => $variant['color'],
+                        'price' => $variant['price'],
+                        'stock' => $variant['stock'],
+                    ]);
+                }
             }
 
             DB::commit();
@@ -139,6 +158,7 @@ class ProductController extends Controller
             return redirect()->route('products.index')->with('error', 'Có lỗi xảy ra khi cập nhật sản phẩm.');
         }
     }
+
 
     /**
      * Xóa sản phẩm.

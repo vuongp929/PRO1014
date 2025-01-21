@@ -1,37 +1,42 @@
 <?php
-
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Models\Category;
 
 class ProductSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
+        // Lấy tất cả các danh mục
+        $categories = Category::all();
+
         // Tạo 10 sản phẩm
         for ($i = 1; $i <= 10; $i++) {
-            // Tạo sản phẩm
-            $product = Product::create([
-                'name' => 'Sản phẩm ' . $i,
-                'code' => 'SP' . str_pad($i, 4, pad_string: '0', pad_type: STR_PAD_LEFT),
-                'image' => 'images/product_' . $i . '.jpg', // Đường dẫn giả
-                // 'status' => rand(0, 1), // Random trạng thái
-            ]);
+            // Tạo hoặc cập nhật sản phẩm
+            $product = Product::updateOrCreate(
+                ['code' => 'SP' . str_pad($i, 4, '0', STR_PAD_LEFT)],
+                [
+                    'name' => 'Sản phẩm ' . $i,
+                    'image' => 'images/product_' . $i . '.jpg',
+                ]
+            );
 
             // Tạo 3 biến thể cho mỗi sản phẩm
             for ($j = 1; $j <= 3; $j++) {
                 ProductVariant::create([
                     'product_id' => $product->id,
                     'size' => 'Size ' . ['S', 'M', 'L'][$j - 1],
-                    'price' => rand(100000, 500000), // Random giá từ 100,000 - 500,000
+                    'price' => rand(100000, 500000),
                 ]);
+            }
+
+            // Liên kết sản phẩm với 1 hoặc nhiều danh mục ngẫu nhiên
+            $randomCategories = $categories->random(rand(1, 3)); // Chọn ngẫu nhiên từ 1 đến 3 danh mục
+            foreach ($randomCategories as $category) {
+                $product->categories()->attach($category->id);
             }
         }
     }

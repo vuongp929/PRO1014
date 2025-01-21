@@ -12,34 +12,24 @@ class StoreProductRequest extends FormRequest
         return true;
     }
 
-    public function rules(): array
-    {
-        return [
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'description' => 'nullable|string',
-            'stock' => 'required|integer|min:0',
-            'category_id' => 'required|exists:categories,id',
-            'variants' => 'nullable|array',
-            'variants.*.size' => 'required|string|max:255',
-            'variants.*.price' => 'required|numeric|min:0',
-        ];
-    }
+    public function rules()
+{
+    return [
+        'code' => 'required|unique:products,code',
+        'name' => 'required|string|max:255',
+        'price' => 'required|numeric|min:0',
+        // các rules khác
+    ];
+}
 
-    public function messages(): array
-    {
-        return [
-            'name.required' => 'Tên sản phẩm là bắt buộc.',
-            'price.required' => 'Giá sản phẩm là bắt buộc.',
-            'price.min' => 'Giá sản phẩm phải lớn hơn hoặc bằng 0.',
-            'stock.required' => 'Tồn kho là bắt buộc.',
-            'stock.min' => 'Tồn kho phải lớn hơn hoặc bằng 0.',
-            'category_id.required' => 'Danh mục sản phẩm là bắt buộc.',
-            'category_id.exists' => 'Danh mục không hợp lệ.',
-            'variants.*.size.required' => 'Kích thước của biến thể là bắt buộc.',
-            'variants.*.price.required' => 'Giá của biến thể là bắt buộc.',
-            'variants.*.price.min' => 'Giá của biến thể phải lớn hơn hoặc bằng 0.',
-        ];
-    }
+public function messages()
+{
+    return [
+        'code.required' => 'Mã sản phẩm là bắt buộc.',
+        'name.required' => 'Tên sản phẩm là bắt buộc.',
+        // các thông báo lỗi khác
+    ];
+}
+
 }
 

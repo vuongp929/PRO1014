@@ -72,6 +72,7 @@
                                                 <th scope="col">Mã sản phẩm</th>
                                                 <th scope="col">sc ảnh</th>
                                                 <th scope="col">Tên sản phẩm</th>
+                                                <th scope="col">Danh mục</th>
                                                 <th scope="col">Giá sản phẩm</th>
                                                 <th scope="col">Giá khuyến mãi</th>
                                                 <th scope="col">Trạng thái</th>
@@ -89,6 +90,11 @@
                                                             class="img-thumbnail" alt="Hình ảnh" width="100px">
                                                     </td>
                                                     <td>{{ $SanPham->ten_san_pham }}</td>
+                                                    <td>
+                                                        @foreach ($product->categories as $category)
+                                                            <span class="badge bg-primary">{{ $category->name }}</span>
+                                                        @endforeach
+                                                    </td> <!-- Hiển thị danh mục -->
                                                     <td>{{ number_format($SanPham->gia, 0, '', '.') }} VNĐ</td>
                                                     <td>{{ number_format($SanPham->gia_khuyen_mai, 0, '', '.') }} VNĐ</td>
                                                     <td>

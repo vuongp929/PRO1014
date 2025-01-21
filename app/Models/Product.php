@@ -13,7 +13,7 @@ class Product extends Model
     protected $table = 'products';
 
     // Các thuộc tính có thể gán (fillable)
-    protected $fillable = ['name', 'price', 'description', 'stock'];
+    protected $fillable = ['name', 'price', 'description', 'stock', 'image'];
 
     /**
      * Mối quan hệ với Category (Nhiều product thuộc về nhiều category thông qua bảng trung gian product_category).
