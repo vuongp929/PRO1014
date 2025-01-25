@@ -63,7 +63,6 @@
                                         <th>Tên sản phẩm</th>
                                         <th>Danh Mục</th>
                                         <th>Size và Giá</th>
-                                        <th>Trạng thái</th>
                                         <th>Hành động</th>
                                     </tr>
                                 </thead>
@@ -88,13 +87,6 @@
                                                         <strong>Giá:</strong> {{ number_format($variant->price, 0, '', '.') }} VNĐ
                                                     </div>
                                                 @endforeach
-                                            </td>
-                                            <td>
-                                                @if ($product->status == 1)
-                                                    <span class="badge bg-success">Hoạt động</span>
-                                                @else
-                                                    <span class="badge bg-danger">Không hoạt động</span>
-                                                @endif
                                             </td>
                                             <td>
                                                 <a href="{{ route('products.show', $product->id) }}" class="btn btn-sm btn-primary">Xem</a>

@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CustomerController;
-
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -20,16 +22,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// - Routing trong Laravel là chức năng khai báo các đường dẫn
-// để đưa người dùng đến các chức năng có trong hệ thống
-// - Mỗi một route chỉ sử dụng để trỏ đến 1 chức năng cụ thể
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-// - Loại 1: Route nạp trực tiếp view
-
-
-// - Loại 2: Sử dụng view thông qua controller (Thường dùng)
-
-Route::resource('products', ProductController::class);
-Route::resource('customers', CustomerController::class);
+Route::middleware('auth')->group(function () {
+    Route::resource('products', ProductController::class);
+    Route::resource('orders', OrderController::class);
+    Route::resource('users', UserController::class);
 
 
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+
+require __DIR__.'/auth.php';

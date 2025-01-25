@@ -71,7 +71,7 @@
                                                 <input type="text"
                                                     class="form-control @error('code') is-invalid @enderror"
                                                     name="code" id="code"
-                                                    value="{{ old('code', strtoupper(Str::random(4))) }}" readonly>
+                                                    value="{{ strtoupper(Str::random(4)) }}" readonly>
                                                 @error('code')
                                                     <p class="text-danger">{{ $message }}</p>
                                                 @enderror
@@ -107,75 +107,44 @@
                                                     @endforeach
                                                 </div>
                                             </div>
-                                            
-                                            
-                                            
-
-                                            <div class="mt-3">
-                                                <label for="price" class="form-label">Giá bán</label>
-                                                <input type="number" step="0.01" name="price"
-                                                    class="form-control @error('price') is-invalid @enderror" id="price"
-                                                    placeholder="Giá bán" value="{{ old('price') }}">
-                                                @error('price')
-                                                    <p class="text-danger">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-
+                                                                                                                                    
                                         </div>
 
-                                        <div class="col-md-8">
-                                            <div class="mt-3">
-                                                <label for="image" class="form-label">Hình ảnh</label>
-                                                <input type="file"
-                                                    class="form-control @error('image') is-invalid @enderror"
-                                                    name="image" id="image">
-                                                @error('image')
-                                                    <p class="text-danger">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-
-                                            <div class="mt-3">
-                                                <label for="description" class="form-label">Mô tả</label>
-                                                <textarea class="form-control" name="description" id="description" rows="4">{{ old('description') }}</textarea>
-                                            </div>
-
-                                            <div class="mt-3">
-                                                <label for="status" class="form-label">Trạng thái</label>
-                                                <div>
-                                                    <input type="radio" name="status" id="status_active"
-                                                        value="1"
-                                                        class="form-check-input @error('status') is-invalid @enderror" {{ old('status') == 1 ? 'checked' : '' }}>
-                                                    <label for="status_active" class="form-check-label">
-                                                        Hiển thị
-                                                    </label>
+                                            <div class="col-md-8">
+                                                <div class="mt-3">
+                                                    <label for="image" class="form-label">Hình ảnh</label>
+                                                    <input type="file"
+                                                        class="form-control @error('image') is-invalid @enderror"
+                                                        name="image" id="image">
+                                                    @error('image')
+                                                        <p class="text-danger">{{ $message }}</p>
+                                                    @enderror
                                                 </div>
-                                                <div>
-                                                    <input type="radio" name="status" id="status_inactive"
-                                                        value="0"
-                                                        class="form-check-input @error('status') is-invalid @enderror" {{ old('status') == 0 ? 'checked' : '' }}>
-                                                    <label for="status_inactive" class="form-check-label">
-                                                        Không hiển thị
-                                                    </label>
-                                                </div>
-                                                @error('status')
-                                                    <p class="text-danger">{{ $message }}</p>
-                                                @enderror
-                                            </div>
 
-                                            <div class="mt-3">
-                                                <label for="variants" class="form-label">Biến thể sản phẩm</label>
-                                                <div id="variants">
-                                                    <div class="variant-row">
-                                                        <input type="text" class="form-control" name="variants[0][size]" placeholder="Kích thước" />
-                                                        <input type="number" class="form-control" name="variants[0][price]" placeholder="Giá" />
-                                                        <input type="number" class="form-control" name="variants[0][stock]" placeholder="Số lượng" />
+                                                <div class="mt-3">
+                                                    <label for="description" class="form-label">Mô tả</label>
+                                                    <textarea class="form-control" name="description" id="description" rows="4">{{ old('description') }}</textarea>
+                                                </div>
+
+
+                                                <div class="mt-3">
+                                                    <label for="variants" class="form-label">Biến thể sản phẩm</label>
+                                                    <div id="variants">
+                                                        <div class="variant-row row g-2">
+                                                            <div class="col">
+                                                                <input type="text" class="form-control" name="variants[${variantIndex}][size]" placeholder="Kích thước" />
+                                                            </div>
+                                                            <div class="col">
+                                                                <input type="number" class="form-control" name="variants[${variantIndex}][price]" placeholder="Giá" />
+                                                            </div>
+                                                            <div class="col">
+                                                                <input type="number" class="form-control" name="variants[${variantIndex}][stock]" placeholder="Số lượng" />
+                                                            </div>
+                                                        </div>
+                                                        <button type="button" id="add-variant">Thêm biến thể</button>
                                                     </div>
-                                                    <button type="button" id="add-variant">Thêm biến thể</button>
                                                 </div>
-                                            </div>
-                                            
-                                            
-
+                                                
                                             <div class="mt-3 text-center">
                                                 <button class="btn btn-primary" type="submit">Thêm mới</button>
                                             </div>
@@ -208,21 +177,36 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-    const checkboxes = document.querySelectorAll('.category-checkbox');
-    
-    checkboxes.forEach(function (checkbox) {
-        checkbox.addEventListener('change', function () {
-            const label = checkbox.nextElementSibling; // Lấy label của checkbox
-            if (checkbox.checked) {
-                label.style.backgroundColor = "#007bff";
-                label.style.color = "#fff";
-            } else {
-                label.style.backgroundColor = "#f0f0f0";
-                label.style.color = "#000";
-            }
-        });
+    let variantIndex = 1;
+
+    document.getElementById('add-variant').addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById('variants').insertAdjacentHTML('beforeend', `
+            <div class="variant-row mt-2 row g-2">
+                <div class="col">
+                    <input type="text" class="form-control" name="variants[${variantIndex}][size]" placeholder="Kích thước" />
+                </div>
+                <div class="col">
+                    <input type="number" class="form-control" name="variants[${variantIndex}][price]" placeholder="Giá" />
+                </div>
+                <div class="col">
+                    <input type="number" class="form-control" name="variants[${variantIndex}][stock]" placeholder="Số lượng" />
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-danger remove-variant">Xóa</button>
+                </div>
+            </div>
+        `);
+        variantIndex++;
+    });
+
+    document.getElementById('variants').addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove-variant')) {
+            e.target.closest('.variant-row').remove();
+        }
     });
 });
+
 
     </script>
 @endsection

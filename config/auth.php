@@ -40,6 +40,16 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'api' => [
+        'driver' => 'token',
+        'provider' => 'users',
+        'hash' => false,
+        ],
+
+        'admin' => [
+            'driver' => 'session', // Hoặc 'token' nếu là API
+            'provider' => 'admins', // Tên provider bạn sẽ thêm bên dưới
+        ],
     ],
 
     /*
@@ -60,15 +70,15 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'users' => [
+            'driver' => 'database',
+            'table' => 'users',
+        ],
     ],
 
     /*

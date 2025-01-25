@@ -10,16 +10,24 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'customer_id', 'status', 'total_price'
+        'user_id',
+        'status',
+        'total_price',
     ];
 
-    public function customer()
+    // Quan hệ với khách hàng
+    public function user()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(User::class);
     }
 
-    public function items()
+    // Quan hệ với các chi tiết đơn hàng
+    public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+    public function customer()
+    {
+        return $this->belongsTo(User::class, 'user_id'); // user_id là khóa ngoại trong bảng orders
     }
 }

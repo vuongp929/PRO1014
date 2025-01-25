@@ -10,16 +10,21 @@ class OrderItem extends Model
     use HasFactory;
 
     protected $fillable = [
-        'order_id', 'product_id', 'quantity', 'price'
+        'order_id',
+        'product_variant_id',
+        'quantity',
+        'price',
     ];
 
+    // Quan hệ với đơn hàng
     public function order()
     {
         return $this->belongsTo(Order::class);
     }
 
-    public function product()
+    // Quan hệ với biến thể sản phẩm
+    public function productVariant()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(ProductVariant::class);
     }
 }

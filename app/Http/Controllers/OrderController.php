@@ -3,68 +3,42 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Http\Requests\StoreOrderRequest;
-use App\Http\Requests\UpdateOrderRequest;
-use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Routing\Controller;
+
 
 class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Hiển thị danh sách đơn hàng
     public function index()
     {
-        //
+        $orders = Order::with('customer')->orderBy('created_at', 'desc')->paginate(10);
+        return view('admins.orders.index', compact('orders'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // Xem chi tiết đơn hàng
+    public function show($id)
     {
-        //
+        $order = Order::with(['orderItems.productVariant.product', 'customer'])->findOrFail($id);
+        return view('admins.orders.show', compact('order'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreOrderRequest $request)
+    // Cập nhật thông tin đơn hàng (trạng thái, trạng thái thanh toán, v.v.)
+    public function update(Request $request, $id)
     {
-        //
-    }
+        $order = Order::findOrFail($id);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Order $order)
-    {
-        //
-    }
+        // Cập nhật trạng thái hoặc trạng thái thanh toán
+        if ($request->has('status')) {
+            $order->status = $request->status;
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Order $order)
-    {
-        //
-    }
+        if ($request->has('payment_status')) {
+            $order->payment_status = $request->payment_status; // Nếu có cột này
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateOrderRequest $request, Order $order)
-    {
-        //
-    }
+        $order->save();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Order $order)
-    {
-        //
+        return redirect()->route('orders.index')->with('success', 'Thông tin đơn hàng đã được cập nhật.');
     }
 }

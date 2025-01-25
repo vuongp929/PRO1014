@@ -91,15 +91,13 @@ class ProductController extends Controller
      * Hiển thị form chỉnh sửa sản phẩm.
      */
     public function edit($id)
-    {
-        $product = Product::with('variants')->find($id);
+{
+    $product = Product::with('categories', 'variants')->findOrFail($id);
+    $categories = Category::all(); // Lấy danh sách tất cả danh mục
 
-        if (!$product) {
-            return redirect()->route('products.index')->with('error', 'Sản phẩm không tồn tại.');
-        }
+    return view('admins.products.edit', compact('product', 'categories'));
+}
 
-        return view('admins.products.edit', compact('product'));
-    }
 
     /**
      * Cập nhật thông tin sản phẩm.
@@ -127,9 +125,7 @@ class ProductController extends Controller
             // Cập nhật sản phẩm
             $product->update([
                 'name' => $request->input('name'),
-                'price' => $request->input('price'),
                 'description' => $request->input('description'),
-                'stock' => $request->input('stock'),
                 'image' => $imagePath,
             ]);
 
@@ -145,7 +141,7 @@ class ProductController extends Controller
                     $product->variants()->create([
                         'size' => $variant['size'],
                         'color' => $variant['color'],
-                        'price' => $variant['price'],
+                        'price' => $variant['price'], 
                         'stock' => $variant['stock'],
                     ]);
                 }
