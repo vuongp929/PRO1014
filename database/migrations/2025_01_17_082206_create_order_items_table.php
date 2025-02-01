@@ -17,7 +17,8 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade'); // Khóa ngoại tới bảng products
             $table->foreignId('product_variant_id')->nullable()->constrained('product_variants')->onDelete('set null'); // Khóa ngoại tới product_variants
             $table->integer('quantity'); // Số lượng sản phẩm
-            $table->decimal('price', 10, 2); // Giá tại thời điểm đặt hàng
+            $table->string('size')->nullable(); // Lưu size của sản phẩm
+            $table->decimal('price_at_order', 12, 2); // Giá tại thời điểm đặt hàng
             $table->timestamps();
         });
         

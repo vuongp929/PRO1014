@@ -70,7 +70,17 @@
                                 class="align-middle">Profile</span></a>
                         <a class="dropdown-item" href="auth-logout-basic.html"><i
                                 class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span
-                                class="align-middle" data-key="t-logout">Logout</span></a>
+                                class="align-middle" data-key="t-logout">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+        
+                                    <x-dropdown-link :href="route('logout')"
+                                            onclick="event.preventDefault();
+                                                        this.closest('form').submit();">
+                                        {{ __('Log Out') }}
+                                    </x-dropdown-link>
+                                </form>
+                                </span></a>
                     </div>
                 </div>
             </div>

@@ -186,4 +186,27 @@ class ProductController extends Controller
             return redirect()->route('products.index')->with('error', 'Có lỗi xảy ra khi xóa sản phẩm.');
         }
     }
+    
+    public function addToCart($productId)
+    {
+        $product = Product::findOrFail($productId);
+
+        // Kiểm tra nếu giỏ hàng đã có sản phẩm này
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$productId])) {
+            $cart[$productId]['quantity']++;
+        } else {
+            $cart[$productId] = [
+                'name' => $product->name,
+                'price' => $product->price,
+                'quantity' => 1,
+                'image' => $product->image,
+            ];
+        }
+
+        session()->put('cart', $cart);
+
+        return redirect()->route('products.index')->with('success', 'Đã thêm sản phẩm vào giỏ hàng');
+    }
 }

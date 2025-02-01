@@ -15,8 +15,10 @@ return new class extends Migration
         $table->id(); // Cột khóa chính
         $table->string('name');
         $table->string('email')->unique();
+        $table->timestamp('email_verified_at')->nullable();
         $table->string('password');
         $table->string('role')->default('customer'); // Cột role để phân biệt customer và admin
+        $table->string('remember_token', 100)->nullable();
         $table->timestamps();
     });
 }

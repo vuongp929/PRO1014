@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Routing\Controller;
+use App\Models\User;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+
+
+
 
 class ProfileController extends Controller
 {
@@ -27,16 +33,25 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        Log::info('Current user:', ['user' => $request->user()]);
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user = $request->user();
+
+        if (!$user instanceof User) {
+            abort(403, 'Unauthorized action.');
         }
 
-        $request->user()->save();
+        $user->fill($request->validated());
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
+
 
     /**
      * Delete the user's account.
@@ -58,4 +73,36 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+    public function verify(Request $request)
+    {
+        $user = $request->user(); // Lấy người dùng hiện tại
+
+        // Kiểm tra xem email đã được xác minh chưa
+        if ($user->hasVerifiedEmail()) {
+            return redirect()->route('dashboard')->with('success', 'Email của bạn đã được xác minh!');
+        }
+
+        // Nếu chưa, xác minh email
+        if ($user->markEmailAsVerified()) {
+            // Bạn có thể trigger sự kiện xác minh nếu cần
+            event(new \Illuminate\Auth\Events\Verified($user));
+        }
+
+        return redirect()->route('dashboard')->with('success', 'Email xác minh thành công!');
+    }
+
+    public function resendVerificationEmail()
+    {
+        $user = Auth::user();  // Lấy người dùng hiện tại
+
+        if ($user->hasVerifiedEmail()) {
+            // Người dùng đã xác minh email
+            return redirect()->route('dashboard');
+        }
+
+        $user->sendEmailVerificationNotification();  // Gửi lại email xác minh
+        return back()->with('status', 'verification-link-sent');
+
+    }
+
 }

@@ -28,21 +28,15 @@
         </thead>
         <tbody>
             @foreach($order->orderItems as $item)
-    @if($item->productVariant && $item->productVariant->product)
         <tr>
             <td>{{ $item->productVariant->product->name }}</td>
-            <td>{{ $item->productVariant->size }}</td>
+            <td>{{ $item->size }}</td> <!-- Lấy size từ order_items -->
             <td>{{ $item->productVariant->color }}</td>
             <td>{{ $item->quantity }}</td>
-            <td>{{ number_format($item->price, 0, ',', '.') }} VNĐ</td>
-            <td>{{ number_format($item->quantity * $item->price, 0, ',', '.') }} VNĐ</td>
+            <td>{{ number_format($item->price_at_order, 0, ',', '.') }} VNĐ</td> <!-- Giá tại thời điểm đặt hàng -->
+            <td>{{ number_format($item->quantity * $item->price_at_order, 0, ',', '.') }} VNĐ</td>
         </tr>
-    @else
-        <tr>
-            <td colspan="6">Sản phẩm không tìm thấy</td>
-        </tr>
-    @endif
-@endforeach
+    @endforeach
         </tbody>
     </table>
 

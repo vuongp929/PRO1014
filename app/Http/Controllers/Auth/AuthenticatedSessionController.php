@@ -24,25 +24,26 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
+{
+    $request->authenticate();
 
-        $request->session()->regenerate();
+    $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
-    }
-
+    return redirect()->intended(RouteServiceProvider::HOME);
+}
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request)
     {
+        // Logout người dùng
         Auth::guard('web')->logout();
 
+        // Xóa session và tái tạo lại CSRF token
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
+        // Redirect về trang chủ hoặc bất kỳ trang nào bạn muốn
         return redirect('/');
     }
 }

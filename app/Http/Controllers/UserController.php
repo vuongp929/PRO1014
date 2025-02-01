@@ -13,13 +13,19 @@ use App\Providers\RouteServiceProvider;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        // Chỉ cho phép người dùng có vai trò 'admin' mới có quyền chỉnh sửa và xóa người dùng
+        $this->middleware('can:update,user')->only(['edit', 'update']);
+        $this->middleware('can:delete,user')->only(['destroy']);
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $users = User::orderBy('created_at', 'desc')->paginate(10);
-        return view('admin.users.index', compact('users'));
+        return view('admins.users.index', compact('users'));
     }
 
     /**
@@ -58,18 +64,18 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user,$id)
+    public function show(User $user)
     {
-        $user = User::findOrFail($id);
-        return view('admin.users.show', compact('user'));
+        return view('admins.users.show', compact('user'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(User $user)
     {
-        return view('admin.users.edit', compact('user'));
+        return view('admins.users.edit', compact('user'));
     }
 
     /**
@@ -77,25 +83,27 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        // Cập nhật thông tin người dùng
+        // Validation cho các trường cần thiết
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class . ',email,' . $user->id],
-            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'role' => 'required|in:admin,customer',
+            'password' => 'nullable|min:3|confirmed', // Thêm nếu có cập nhật mật khẩu
         ]);
 
-        $user->name = $request->name;
-        $user->email = $request->email;
+        // Chỉ cập nhật các trường được gửi từ request
+        $data = $request->only(['name', 'email', 'role']);
 
+        // Nếu có password, mã hóa và thêm vào danh sách cập nhật
         if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
+            $data['password'] = Hash::make($request->password);
         }
 
-        $user->role = $request->input('role', $user->role); // Cập nhật role nếu có
+        // Cập nhật thông tin người dùng
+        $user->update($data);
 
-        $user->save();
-
-        return redirect()->route('users.index')->with('success', 'Thông tin người dùng đã được cập nhật.');
+        // Redirect về trang danh sách người dùng với thông báo thành công
+        return redirect()->route('users.index')->with('success', 'Cập nhật thành công!');
     }
 
     /**

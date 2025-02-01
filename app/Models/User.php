@@ -1,39 +1,29 @@
 <?php
-
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail; 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
 
     protected $fillable = [
-        'name', 'email', 'password', 'role',
+        'name',
+        'email',
+        'password',
+        'role',
     ];
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * Kiểm tra xem user có phải là admin không
-     */
-    public function isAdmin()
-    {
-        return $this->role === 'admin';
-    }
-
-    /**
-     * Kiểm tra xem user có phải là customer không
-     */
-    public function isCustomer()
-    {
-        return $this->role === 'customer';
-    }
+    // Các phương thức này sẽ được tự động sử dụng nếu bạn implement MustVerifyEmail
 }

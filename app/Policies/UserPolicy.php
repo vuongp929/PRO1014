@@ -3,63 +3,26 @@
 namespace App\Policies;
 
 use App\Models\User;
+use Illuminate\Auth\GenericUser;
 use Illuminate\Auth\Access\Response;
+use App\Models\Model; // Thêm lớp Model nếu bạn cần
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    use HandlesAuthorization;
+
+    public function update($authUser, User $user)
     {
-        //
+        if ($authUser instanceof GenericUser) {
+            $authUser = User::findOrFail($authUser->getAuthIdentifier());
+        }
+
+        return $authUser->role === 'admin' || $authUser->id === $user->id;
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, User $model): bool
+    public function delete(User $authUser, User $user)
     {
-        //
-    }
-
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, User $model): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, User $model): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, User $model): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, User $model): bool
-    {
-        //
+        return $authUser->role === 'admin';
     }
 }

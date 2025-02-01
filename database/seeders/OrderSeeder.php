@@ -1,13 +1,12 @@
-<?php
+<?php 
 
 namespace Database\Seeders;
 
 use App\Models\Order;
 use App\Models\User;
-use App\Models\Product;
+use App\Models\ProductVariant; // Sử dụng ProductVariant thay vì Product
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class OrderSeeder extends Seeder
 {
@@ -18,32 +17,54 @@ class OrderSeeder extends Seeder
      */
     public function run()
     {
-        // Lấy một vài users có trong database
+        // Lấy danh sách người dùng
         $users = User::all();
 
-        // Lấy một vài products có trong database (nếu có bảng sản phẩm)
-        $products = Product::all();
+        // Lấy danh sách product_variants
+        $productVariants = ProductVariant::all();
+
+        // Nếu không có product_variants, dừng việc seeding
+        if ($productVariants->isEmpty()) {
+            $this->command->error('Không có product_variants nào trong cơ sở dữ liệu. Hãy thêm dữ liệu trước khi chạy OrderSeeder.');
+            return;
+        }
 
         // Tạo đơn hàng cho từng user
         foreach ($users as $user) {
-            // Tạo một đơn hàng mẫu
+            // Tạo đơn hàng
             $order = Order::create([
                 'user_id' => $user->id,
-                'status' => 'pending', // Trạng thái đơn hàng (pending, completed, cancelled...)
-                'payment_status' => 'unpaid', // Trạng thái thanh toán (unpaid, paid...)
-                'total_price' => rand(100, 1000), // Tổng giá trị đơn hàng ngẫu nhiên
-                'shipping_address' => 'Address for user ' . $user->name, // Địa chỉ giao hàng mẫu
+                'status' => 'pending',
+                'payment_status' => 'unpaid',
+                'total_price' => 0, // Tạm thời đặt bằng 0
+                'shipping_address' => 'Address for user ' . $user->name,
             ]);
 
-            // Tạo một số order items (sản phẩm trong đơn hàng)
-            for ($i = 0; $i < rand(1, 5); $i++) { // Số lượng sản phẩm trong mỗi đơn hàng
+            $totalPrice = 0;
+
+            // Tạo sản phẩm trong đơn hàng
+            for ($i = 0; $i < rand(1, 5); $i++) {
+                $productVariant = $productVariants->random();
+
+                $quantity = rand(1, 3); // Số lượng ngẫu nhiên
+                $price = $productVariant->price; // Lấy giá từ bảng product_variants
+
                 DB::table('order_items')->insert([
                     'order_id' => $order->id,
-                    'product_id' => $products->random()->id, // Chọn ngẫu nhiên một sản phẩm
-                    'quantity' => rand(1, 3), // Số lượng ngẫu nhiên
-                    'price' => rand(100, 500), // Giá sản phẩm ngẫu nhiên
+                    'product_variant_id' => $productVariant->id,
+                    'quantity' => $quantity,
+                    'price_at_order' => $productVariant->price, // Giá tại thời điểm đặt hàng
+                    'size' => $productVariant->size, // Size của sản phẩm
+                    'product_id' => $productVariant->product_id, // Gán product_id từ product_variant
                 ]);
+                
+
+                // Cộng dồn giá trị vào tổng giá đơn hàng
+                $totalPrice += $quantity * $price;
             }
+
+            // Cập nhật tổng giá trị đơn hàng
+            $order->update(['total_price' => $totalPrice]);
         }
     }
 }
