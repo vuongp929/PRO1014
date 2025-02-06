@@ -1,0 +1,109 @@
+.featured-products h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.card {
+    border: none;
+    overflow: hidden;
+    background-color: transparent;
+    transition: transform 0.3s ease;
+    margin-bottom: 30px;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+}
+
+.card-img-top {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+.card-body {
+    padding: 15px;
+    text-align: center;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #8357ae;
+}
+
+.price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #8357ae;
+}
+
+/* Nút chọn size */
+.size-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.size-button {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    background-color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #555;
+    transition: all 0.3s ease;
+}
+
+.size-button.selected {
+    background-color: #8357ae;
+    color: white;
+    border-color: #8357ae;
+}
+
+.btn-add {
+    background-color: #8357ae;
+    border-color: #8357ae;
+    border-radius: 15px;
+    padding: 12px;
+    font-size: 1.1rem;
+    color: white;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #723e8a;
+}
+
+/* Responsive cho sản phẩm */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.col-md-3 {
+    flex: 0 0 23%;
+    box-sizing: border-box;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 992px) {
+    .col-md-3 {
+        flex: 0 0 23%;
+    }
+}
+
+@media (max-width: 576px) {
+    .col-md-3 {
+        flex: 0 0 50%;
+    }
+}

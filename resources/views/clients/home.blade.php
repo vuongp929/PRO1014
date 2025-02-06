@@ -4,17 +4,135 @@
 
 @section('CSS')
     <link rel="stylesheet" href="{{ asset('assets/user/css/shop-index.css') }}">
+    {{-- <style>
+        .featured-products h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: transparent;
+            transition: transform 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        .card-body {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #8357ae;
+        }
+
+        .price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #8357ae;
+        }
+
+        /* Nút chọn size */
+        .size-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .size-button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            background-color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            color: #555;
+            transition: all 0.3s ease;
+        }
+
+        .size-button.selected {
+            background-color: #8357ae;
+            color: white;
+            border-color: #8357ae;
+        }
+
+        .btn-primary {
+            background-color: #8357ae;
+            border-color: #8357ae;
+            border-radius: 15px;
+            padding: 12px;
+            font-size: 1.1rem;
+            color: white;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #723e8a;
+        }
+
+        /* Responsive cho sản phẩm */
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .col-md-3 {
+            flex: 0 0 23%;
+            box-sizing: border-box;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 992px) {
+            .col-md-3 {
+                flex: 0 0 23%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .col-md-3 {
+                flex: 0 0 50%;
+            }
+        }
+    </style> --}}
 @endsection
 
 @section('content')
+
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
 <div class="container">
-    <!-- Banner hoặc slider -->
-    <div class="banner">
-        <img src="https://via.placeholder.com/1200x400" alt="Banner" class="img-fluid">
+    <div class="banner mb-5">
+        <img src="https://via.placeholder.com/1200x400" alt="Banner" class="img-fluid rounded">
     </div>
 
-    <!-- Danh sách sản phẩm nổi bật -->
-    <div class="featured-products mt-5">
+    <div class="featured-products">
         <h2>Sản phẩm nổi bật</h2>
         <div class="row">
             @foreach($products as $product)
@@ -22,47 +140,45 @@
                     <div class="card">
                         <img src="{{ asset('storage/'.$product->image) }}" class="card-img-top" alt="{{ $product->name }}">
                         <div class="card-body">
-                            <h5 class="card-title">{{ $product->name }}</h5>
-                            <p class="card-text">{{ number_format($product->price, 0, ',', '.') }} VND</p>
-                            <a href="{{ route('products.add-to-cart', $product->id) }}" class="btn btn-primary">Thêm vào giỏ</a>
+                            <h5 class="card-title text-truncate" title="{{ $product->name }}">{{ $product->name }}</h5>
+
+                            <form action="{{ route('cart.add') }}" method="POST" onsubmit="return validateSizeSelection({{ $product->id }})">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <input type="hidden" id="selected-size-{{ $product->id }}" name="size" value="{{ $product->variants->first()->id }}">
+                                <input type="hidden" name="redirect_url" value="{{ url()->current() }}">
+                                <!-- Nút chọn size -->
+                                <div class="size-buttons">
+                                    @foreach ($product->variants as $variant)
+                                        <button type="button" class="size-button" 
+                                            data-size-id="{{ $variant->id }}" 
+                                            data-price="{{ $variant->price }}" 
+                                            onclick="selectSize({{ $product->id }}, this)">
+                                            {{ $variant->size }}
+                                        </button>
+                                    @endforeach
+                                </div>
+                            
+                                <!-- Giá sản phẩm -->
+                                <p class="price mt-2">
+                                    Giá: <span id="product-price-{{ $product->id }}">{{ number_format($product->variants->first()->price) }} VND</span>
+                                </p>
+                            
+                                <button type="submit" class="btn btn-add btn-block mt-3">Thêm vào giỏ</button>
+                            </form>                            
                         </div>
                     </div>
                 </div>
             @endforeach
         </div>
     </div>
-
-    <!-- Khuyến mãi hoặc bộ sưu tập -->
-    <div class="promotions mt-5">
-        <h2>Khuyến mãi đặc biệt</h2>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="promotion-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Khuyến mãi" class="img-fluid">
-                    <h5>Giảm giá đến 50%</h5>
-                    <p>Nhận giảm giá đặc biệt khi mua sắm các sản phẩm yêu thích</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="promotion-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Khuyến mãi" class="img-fluid">
-                    <h5>Miễn phí vận chuyển</h5>
-                    <p>Miễn phí vận chuyển cho đơn hàng trên 500k</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="promotion-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Khuyến mãi" class="img-fluid">
-                    <h5>Mua 1 tặng 1</h5>
-                    <p>Nhận thêm một món quà hấp dẫn khi mua sản phẩm trong bộ sưu tập</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
 @endsection
 
 @section('JS')
-    {{-- Thêm JS riêng nếu cần --}}
+<script>
+    // Hàm chọn size và cập nhật giao diện
+
+
+</script>
 @endsection

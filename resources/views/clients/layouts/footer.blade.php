@@ -7,7 +7,7 @@
         </div>
         <!-- END COPYRIGHT -->
         <!-- BEGIN PAYMENTS -->
-        <div class="col-md-4 col-sm-4">
+        {{-- <div class="col-md-4 col-sm-4">
           <ul class="list-unstyled list-inline pull-right">
             <li><img src="assets/corporate/img/payments/western-union.jpg" alt="We accept Western Union" title="We accept Western Union"></li>
             <li><img src="assets/corporate/img/payments/american-express.jpg" alt="We accept American Express" title="We accept American Express"></li>
@@ -15,7 +15,7 @@
             <li><img src="assets/corporate/img/payments/PayPal.jpg" alt="We accept PayPal" title="We accept PayPal"></li>
             <li><img src="assets/corporate/img/payments/visa.jpg" alt="We accept Visa" title="We accept Visa"></li>
           </ul>
-        </div>
+        </div> --}}
         <!-- END PAYMENTS -->
         <!-- BEGIN POWERED -->
         <div class="col-md-4 col-sm-4 text-right">
@@ -25,3 +25,60 @@
       </div>
     </div>
   </div>
+  <style>
+    .pre-footer {
+    background-color: #f9f9f9;
+    padding: 40px 0;
+    color: #8357ae;
+    font-family: 'VL BoosterNextFYBlack', sans-serif;
+    }
+
+    .pre-footer h5 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #8357ae;
+    }
+
+    .store-info, .bank-info, .teddy-info {
+        margin-bottom: 20px;
+    }
+
+    .social-icons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .social-icons a {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+    }
+
+    .social-icons img {
+        width: 100%;
+        height: auto;
+        filter: grayscale(1) invert(0.6);
+        transition: all 0.3s ease;
+    }
+
+    .social-icons img:hover {
+        filter: invert(0);
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    ul li {
+        margin-bottom: 10px;
+        font-size: 1rem;
+        color: #8357ae;
+    }
+
+    .pre-footer p {
+        margin-bottom: 5px;
+        font-size: 1rem;
+    }
+
+  </style>

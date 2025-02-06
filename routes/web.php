@@ -7,6 +7,9 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,7 +28,10 @@ Route::get('/welcome', function () {
     return view('welcome');
 });
 
-Route::get('/', [ClientController::class, 'home'])->name('client.home');
+Route::get('/', [ClientController::class, 'index'])->name('client.home');
+Route::get('/category/{slug}', [CategoryController::class, 'showCategory'])->name('client.category');
+Route::get('/search', [ProductController::class, 'search'])->name('client.search');
+
 
 Route::get('/dashboard', [DashBoardController::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -56,8 +62,25 @@ Route::middleware('auth')->group(function () {
         ->name('verification.resend');
 });
 
-Route::get('/payment/vnpay-qr', [PaymentController::class, 'createQRPayment'])->name('payment.vnpay.qr');
+Route::middleware(['web', 'auth'])->prefix('clients')->group(function () {
+    Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
+    Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
+});
+
+
+Route::prefix('clients')->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+});
+
+Route::get('/payment/vnpay/order/{orderId}', [PaymentController::class, 'createQRPayment'])
+    ->name('payment.vnpay.qr');
 Route::get('/payment/vnpay-return', [PaymentController::class, 'vnpayReturn'])->name('payment.vnpay.return');
+Route::post('payment/vnpay/ipn', [PaymentController::class, 'vnpayIpn'])->name('payment.vnpay.ipn');
+Route::get('/checkout/success', [PaymentController::class, 'paymentVnpaySuccess'])->name('checkout.success');
+Route::get('/checkout/failed', [PaymentController::class, 'paymentFailed'])->name('checkout.failed');
 
 
 require __DIR__.'/auth.php';

@@ -12,7 +12,9 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'status',
+        'payment_status',
         'total_price',
+        'shipping_address',
     ];
 
     // Quan hệ với khách hàng
