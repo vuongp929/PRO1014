@@ -57,12 +57,16 @@ class CheckoutController extends Controller
         if ($totalAmount < 5000 || $totalAmount >= 1000000000) {
             return redirect()->route('cart.view')->with('error', 'Số tiền thanh toán không hợp lệ.');
         }
-
+        
         $order = new Order();
         $order->user_id = Auth::id();
         $order->total_price = $totalAmount;
+        $order->status = 'pending';
+        $order->payment_status = 'unpaid';  
+        $order->cart = json_encode($cart);
+        $order->payment_method = $data['payment_method'];
         $order->save();
-
+    
         if ($data['payment_method'] == 'vnpay') {
             return redirect()->route('payment.vnpay.qr', ['orderId' => $order->id]);
         } else {

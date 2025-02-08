@@ -85,11 +85,12 @@
                     Thanh toán khi nhận hàng (COD)
                 </label>
             </div>
-            @if ($order->payment_status == 'paid')
+            @if(optional($order)->payment_status == 'paid')
                 <p>Đơn hàng của bạn đã được thanh toán và đang được xử lý.</p>
             @else
                 <button type="submit" class="btn btn-primary mt-3">Đặt hàng</button>
             @endif
+
             
         </form>
 
