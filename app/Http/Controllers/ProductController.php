@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Routing\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductVariant;
@@ -187,26 +188,25 @@ class ProductController extends Controller
         }
     }
     
-    public function addToCart($productId)
+    
+    public function search(Request $request)
     {
-        $product = Product::findOrFail($productId);
+        $query = $request->input('query');
 
-        // Kiểm tra nếu giỏ hàng đã có sản phẩm này
-        $cart = session()->get('cart', []);
-
-        if (isset($cart[$productId])) {
-            $cart[$productId]['quantity']++;
+        // Nếu có từ khóa tìm kiếm
+        if ($query) {
+            // Tìm các sản phẩm có tên chứa từ khóa
+            $products = Product::with('categories')
+                ->where('name', 'like', '%' . $query . '%')
+                ->orWhere('description', 'like', '%' . $query . '%')  // Có thể tìm trong mô tả sản phẩm
+                ->orderBy('name')  // Sắp xếp theo tên
+                ->paginate(10);  // Phân trang
         } else {
-            $cart[$productId] = [
-                'name' => $product->name,
-                'price' => $product->price,
-                'quantity' => 1,
-                'image' => $product->image,
-            ];
+            // Nếu không có từ khóa, trả về tất cả sản phẩm
+            $products = Product::with('categories')->orderByDesc('id')->paginate(10);
         }
 
-        session()->put('cart', $cart);
-
-        return redirect()->route('products.index')->with('success', 'Đã thêm sản phẩm vào giỏ hàng');
+        // Trả kết quả tìm kiếm về view
+        return view('clients.search_results', compact('products'));
     }
 }

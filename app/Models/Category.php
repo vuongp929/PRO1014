@@ -13,14 +13,26 @@ class Category extends Model
     protected $table = 'categories';
 
     // Các thuộc tính có thể gán (fillable)
-    protected $fillable = ['name', 'slug'];
+    protected $fillable = [
+        'name', 
+        'slug' ,
+        'parent_id'
+    ];
 
-    /**
-     * Mối quan hệ với Product (Nhiều category chứa nhiều product thông qua bảng product_category).
-     */
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
+    }
+    
     public function products()
     {
         return $this->belongsToMany(Product::class, 'product_category', 'category_id', 'product_id')
                     ->withTimestamps(); // Thêm thông tin thời gian nếu cần
     }
+    
 }

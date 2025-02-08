@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Product;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use Illuminate\Routing\Controller;
@@ -39,9 +40,15 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show(Category $category, $slug)
     {
-        //
+        // Lấy danh mục theo slug
+        $category = Category::where('slug', $slug)->firstOrFail();
+
+        // Lấy sản phẩm theo danh mục và hiển thị
+        $products = Product::where('category_id', $category->id)->get();
+
+        return view('clients.category.show', compact('category', 'products'));
     }
 
     /**
@@ -66,5 +73,10 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         //
+    }
+    public function showHeaderCategories()
+    {
+        $categories = Category::whereNull('parent_id')->with('children')->get(); // Lấy tất cả các danh mục cha và các danh mục con của nó
+        return view('layouts.client', compact('categories'));
     }
 }

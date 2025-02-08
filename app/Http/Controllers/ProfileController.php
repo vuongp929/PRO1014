@@ -57,22 +57,27 @@ class ProfileController extends Controller
      * Delete the user's account.
      */
     public function destroy(Request $request): RedirectResponse
-    {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
+{
+    $request->validateWithBag('userDeletion', [
+        'password' => ['required', 'current_password'],
+    ]);
 
-        $user = $request->user();
+    $user = $request->user();
 
-        Auth::logout();
+    Auth::logout();
 
-        $user->delete();
+    // Xóa giỏ hàng khỏi session khi người dùng đăng xuất
+    $request->session()->forget('cart');
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+    // Xóa người dùng và thông tin session
+    $user->delete();
 
-        return Redirect::to('/');
-    }
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return Redirect::to('/');
+}
+
     public function verify(Request $request)
     {
         $user = $request->user(); // Lấy người dùng hiện tại
