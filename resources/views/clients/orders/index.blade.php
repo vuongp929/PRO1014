@@ -27,7 +27,7 @@
                     <td>{{ $order->payment_status }}</td>
                     <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
                     <td>
-                        <a href="{{ route('orders.show', $order->id) }}" class="btn btn-info">Xem chi tiết</a>
+                        <a href="{{ route('client.orders.show', $order->id) }}" class="btn btn-info">Xem chi tiết</a>
                     </td>
                 </tr>
                 @endforeach

@@ -123,7 +123,7 @@ h1, h2, h3, h4, h5, h6 {
                 <div class="header-right">
                     @if(auth()->check())
                         <a href="{{ route('logout') }}" class="btn btn-link">Đăng xuất</a>
-                        <a href="{{ route('orders.index') }}" class="btn btn-link">
+                        <a href="{{ route('client.orders.index') }}" class="btn btn-link">
                             Đơn hàng
                         </a>
                     @else

@@ -74,8 +74,8 @@
 
             <h4 class="mt-4">Phương thức thanh toán</h4>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="payment_method" value="vnpay" id="vnpay" required>
-                <label class="form-check-label" for="vnpay">
+                <input class="form-check-input" type="radio" name="payment_method" value="vnpay" id="vnpay" required checked>
+                <label class="form-check-label" for="vnpay" >
                     Thanh toán qua VNPay
                 </label>
             </div>
