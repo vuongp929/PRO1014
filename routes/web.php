@@ -50,8 +50,8 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->prefix('clients')->group(function () {
-    Route::get('/orders', [MyOrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [MyOrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders', [MyOrderController::class, 'index'])->name('client.orders.index');
+    Route::get('/orders/{order}', [MyOrderController::class, 'show'])->name('client.orders.show');
 });
 
 

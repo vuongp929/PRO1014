@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    Quản lý sản phẩm
+    Chỉnh sửa sản phẩm
 @endsection
 
 @section('CSS')
@@ -33,7 +33,6 @@
 
 @section('content')
     <div class="container-fluid">
-        <!-- start page title -->
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between bg-galaxy-transparent">
@@ -42,20 +41,19 @@
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
-                            <li class="breadcrumb-item active">Cập nhật sản phẩm</li>
+                            <li class="breadcrumb-item active">Chỉnh sửa sản phẩm</li>
                         </ol>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- end page title -->
 
         <div class="row">
             <div class="col">
                 <div class="h-100">
                     <div class="card">
                         <div class="card-header align-items-center d-flex">
-                            <h4 class="card-title mb-0 flex-grow-1">Cập nhật sản phẩm</h4>
+                            <h4 class="card-title mb-0 flex-grow-1">Chỉnh sửa sản phẩm</h4>
                         </div>
 
                         <div class="card-body">
@@ -68,18 +66,12 @@
                                         <div class="col-md-4">
                                             <div class="mt-3">
                                                 <label for="code" class="form-label">Mã sản phẩm</label>
-                                                <input type="text" class="form-control" name="code" id="code" 
-                                                    value="{{ $product->code }}" readonly>
+                                                <input type="text" class="form-control" name="code" id="code" value="{{ $product->code }}" readonly>
                                             </div>
 
                                             <div class="mt-3">
                                                 <label for="name" class="form-label">Tên sản phẩm</label>
-                                                <input type="text" name="name" id="name"
-                                                    class="form-control @error('name') is-invalid @enderror"
-                                                    value="{{ old('name', $product->name) }}">
-                                                @error('name')
-                                                    <p class="text-danger">{{ $message }}</p>
-                                                @enderror
+                                                <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $product->name) }}">
                                             </div>
 
                                             <div class="mt-3">
@@ -91,8 +83,7 @@
                                                                 id="category_{{ $category->id }}" 
                                                                 name="category_ids[]" 
                                                                 value="{{ $category->id }}" 
-                                                                class="category-checkbox" 
-                                                                {{ in_array($category->id, old('category_ids', $product->categories->pluck('id')->toArray())) ? 'checked' : '' }}
+                                                                {{ in_array($category->id, $product->categories->pluck('id')->toArray()) ? 'checked' : '' }}
                                                             />
                                                             <label for="category_{{ $category->id }}" class="category-label">{{ $category->name }}</label>
                                                         </div>
@@ -104,13 +95,9 @@
                                         <div class="col-md-8">
                                             <div class="mt-3">
                                                 <label for="image" class="form-label">Hình ảnh</label>
-                                                <input type="file" class="form-control @error('image') is-invalid @enderror"
-                                                    name="image" id="image">
-                                                @error('image')
-                                                    <p class="text-danger">{{ $message }}</p>
-                                                @enderror
+                                                <input type="file" class="form-control" name="image" id="image">
                                                 @if ($product->image)
-                                                    <img src="{{ Storage::url($product->image) }}" alt="Hình ảnh sản phẩm" width="100px">
+                                                    <img src="{{ asset('storage/' . $product->image) }}" alt="Hình ảnh sản phẩm" class="img-fluid mt-2" width="100">
                                                 @endif
                                             </div>
 
@@ -121,20 +108,22 @@
 
                                             <div class="mt-3">
                                                 <label for="variants" class="form-label">Biến thể sản phẩm</label>
-                                                <div id="categories">
-                                                    @foreach ($product->categories as $index => $category)
-                                                        <div class="category-row mt-2 row g-2">
+                                                <div id="variants">
+                                                    @foreach ($product->variants as $index => $variant)
+                                                        <div class="variant-row row g-2 mb-2">
                                                             <div class="col">
-                                                                <input type="text" class="form-control" name="categories[{{ $index }}][name]" value="{{ $category->name }}" />
+                                                                <input type="text" class="form-control" name="variants[{{ $index }}][size]" placeholder="Kích thước" value="{{ old('variants.' . $index . '.size', $variant->size) }}" />
                                                             </div>
-                                                            <div class="col-auto">
-                                                                <button type="button" class="btn btn-danger remove-category">Xóa</button>
+                                                            <div class="col">
+                                                                <input type="number" class="form-control" name="variants[{{ $index }}][price]" placeholder="Giá" value="{{ old('variants.' . $index . '.price', $variant->price) }}" />
+                                                            </div>
+                                                            <div class="col">
+                                                                <input type="number" class="form-control" name="variants[{{ $index }}][stock]" placeholder="Số lượng" value="{{ old('variants.' . $index . '.stock', $variant->stock) }}" />
                                                             </div>
                                                         </div>
+                                                        <button type="button" id="add-variant">Thêm biến thể</button>
                                                     @endforeach
                                                 </div>
-                                                <button type="button" id="add-category" class="btn btn-primary mt-3">Thêm danh mục</button>
-                                                
                                             </div>
 
                                             <div class="mt-3 text-center">
@@ -150,37 +139,53 @@
             </div> <!-- end .h-100-->
         </div> <!-- end col -->
     </div>
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 @endsection
 
 @section('JS')
-<script src="https://cdn.ckeditor.com/4.8.0/basic/ckeditor.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-    let categoryIndex = {{ isset($product->categories) ? $product->categories->count() : 0 }}; // Số lượng danh mục hiện tại
+    <script src="https://cdn.ckeditor.com/4.8.0/basic/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('description');
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        let variantIndex = 1;
 
-    // Thêm danh mục
-    document.getElementById('add-category').addEventListener('click', function (e) {
-        e.preventDefault();
-        document.getElementById('categories').insertAdjacentHTML('beforeend', `
-            <div class="category-row mt-2 row g-2">
-                <div class="col">
-                    <input type="text" class="form-control" name="categories[${categoryIndex}][name]" placeholder="Tên danh mục" />
+        document.getElementById('add-variant').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.getElementById('variants').insertAdjacentHTML('beforeend', `
+                <div class="variant-row mt-2 row g-2">
+                    <div class="col">
+                        <input type="text" class="form-control" name="variants[${variantIndex}][size]" placeholder="Kích thước" />
+                    </div>
+                    <div class="col">
+                        <input type="number" class="form-control" name="variants[${variantIndex}][price]" placeholder="Giá" />
+                    </div>
+                    <div class="col">
+                        <input type="number" class="form-control" name="variants[${variantIndex}][stock]" placeholder="Số lượng" />
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-danger remove-variant">Xóa</button>
+                    </div>
                 </div>
-                <div class="col-auto">
-                    <button type="button" class="btn btn-danger remove-category">Xóa</button>
-                </div>
-            </div>
-        `);
-        categoryIndex++;
-    });
+            `);
+            variantIndex++;
+        });
 
-    // Xóa danh mục
-    document.getElementById('categories').addEventListener('click', function (e) {
-        if (e.target.classList.contains('remove-category')) {
-            e.target.closest('.category-row').remove();
-        }
+        document.getElementById('variants').addEventListener('click', function (e) {
+            if (e.target.classList.contains('remove-variant')) {
+                e.target.closest('.variant-row').remove();
+            }
+        });
     });
-});
-
-</script>
+    </script>
 @endsection
