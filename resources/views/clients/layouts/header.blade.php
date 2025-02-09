@@ -161,6 +161,9 @@ h1, h2, h3, h4, h5, h6 {
                             </ul>
                         </li>
                     @endforeach
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('client.contact') }}">Liên hệ</a>
+                    </li>
                 </ul>
             </div>
         </div>

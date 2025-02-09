@@ -11,6 +11,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -89,5 +90,6 @@ Route::post('payment/vnpay/ipn', [PaymentController::class, 'vnpayIpn'])->name('
 Route::get('/checkout/success', [PaymentController::class, 'paymentVnpaySuccess'])->name('checkout.success');
 Route::get('/checkout/failed', [PaymentController::class, 'paymentFailed'])->name('checkout.failed');
 
+Route::get('/contact', [ContactController::class, 'index'])->name('client.contact');
 
 require __DIR__.'/auth.php';
