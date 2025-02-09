@@ -117,6 +117,13 @@
     <div class="container">
         <div class="row">
             <div class="col-md-10 mx-auto">
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
                 <div class="contact-card">
                     <div class="row g-0">
                         <!-- Thông tin liên hệ -->
@@ -165,7 +172,7 @@
                             <div class="contact-form">
                                 <h3 class="mb-4" style="color: #8357ae;">Gửi tin nhắn cho chúng tôi</h3>
                                 
-                                <form  method="POST">
+                                <form action="{{ route('feedback.store') }}" method="POST">
                                     @csrf
                                     <div class="row">
                                         <div class="col-md-6">
