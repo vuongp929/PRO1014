@@ -156,8 +156,6 @@
     <script>
         CKEDITOR.replace('description');
     </script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
         let variantIndex = 1;
 
         document.getElementById('add-variant').addEventListener('click', function (e) {
@@ -187,6 +185,6 @@
             }
         });
     });
-</script>
+    </script>
 
 @endsection

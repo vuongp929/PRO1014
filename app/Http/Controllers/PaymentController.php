@@ -154,7 +154,7 @@ class PaymentController extends Controller
         $order = Order::where('user_id', auth()->id())
             ->orderBy('created_at', 'desc')
             ->first();
-        return redirect()->route('orders.index', compact('order'))
+        return redirect()->route('client.orders.index', compact('order'))
             ->with('success', 'Đơn hàng của bạn đang được xử lý!');
     }
     
