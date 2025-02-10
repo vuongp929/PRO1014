@@ -25,6 +25,13 @@
                         <a href="{{ route('orders.index') }}" class="inline-block px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition duration-300">
                             Quản lý Đơn hàng
                         </a>
+
+                        <!-- Nút Quản lý Phản hồi -->
+                        <a href="{{ route('feedback.index') }}" 
+                           class="inline-block px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition duration-300">
+                            <i class="fas fa-comments mr-2"></i>
+                            Quản lý Phản hồi
+                        </a>
                     </div>
                 </div>
                 

@@ -49,6 +49,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/logout', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // route admin feedback
+    Route::resource('feedback', FeedbackController::class);
+    Route::get('feedback/{feedback}', [FeedbackController::class, 'show'])
+        ->name('feedback.show');
+    Route::delete('feedback/{feedback}', [FeedbackController::class, 'destroy'])
+        ->name('feedback.destroy');
+    Route::patch('feedback/{feedback}/update-status', [FeedbackController::class, 'updateStatus'])->name('feedback.update-status');
 });
 
 Route::middleware('auth')->prefix('clients')->group(function () {
