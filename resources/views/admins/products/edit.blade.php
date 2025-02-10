@@ -156,38 +156,37 @@
     <script>
         CKEDITOR.replace('description');
     </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            let variantIndex = 1;
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let variantIndex = 1;
 
-    document.getElementById('add-variant').addEventListener('click', function (e) {
-        e.preventDefault();
-        document.getElementById('variants').insertAdjacentHTML('beforeend', `
-            <div class="variant-row mt-2 row g-2">
-                <div class="col">
-                    <input type="text" class="form-control" name="variants[${variantIndex}][size]" placeholder="Kích thước" />
+        document.getElementById('add-variant').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.getElementById('variants').insertAdjacentHTML('beforeend', `
+                <div class="variant-row mt-2 row g-2">
+                    <div class="col">
+                        <input type="text" class="form-control" name="variants[${variantIndex}][size]" placeholder="Kích thước" />
+                    </div>
+                    <div class="col">
+                        <input type="number" class="form-control" name="variants[${variantIndex}][price]" placeholder="Giá" />
+                    </div>
+                    <div class="col">
+                        <input type="number" class="form-control" name="variants[${variantIndex}][stock]" placeholder="Số lượng" />
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-danger remove-variant">Xóa</button>
+                    </div>
                 </div>
-                <div class="col">
-                    <input type="number" class="form-control" name="variants[${variantIndex}][price]" placeholder="Giá" />
-                </div>
-                <div class="col">
-                    <input type="number" class="form-control" name="variants[${variantIndex}][stock]" placeholder="Số lượng" />
-                </div>
-                <div class="col-auto">
-                    <button type="button" class="btn btn-danger remove-variant">Xóa</button>
-                </div>
-            </div>
-        `);
-        variantIndex++;
+            `);
+            variantIndex++;
+        });
+
+        document.getElementById('variants').addEventListener('click', function (e) {
+            if (e.target.classList.contains('remove-variant')) {
+                e.target.closest('.variant-row').remove();
+            }
+        });
     });
+</script>
 
-    document.getElementById('variants').addEventListener('click', function (e) {
-        if (e.target.classList.contains('remove-variant')) {
-            e.target.closest('.variant-row').remove();
-        }
-    });
-    });
-
-
-    </script>
 @endsection
