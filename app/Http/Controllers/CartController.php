@@ -36,42 +36,38 @@ class CartController extends Controller
     }
 
     public function addToCart(Request $request)
-    {
-        $product = Product::find($request->product_id);
-        $variant = ProductVariant::find($request->size);
-    
-        if (!$product || !$variant) {
-            return response()->json(['error' => 'Sản phẩm hoặc kích thước không hợp lệ!'], 400);
-        }
-    
-        $cart = session()->get('cart', []);
-    
-        // Kiểm tra nếu sản phẩm đã có trong giỏ, nếu có thì cập nhật số lượng
-        if (isset($cart[$variant->id])) {
-            $cart[$variant->id]['quantity']++;
-        } else {
-            $productImage = $product->image ?? 'default-image.jpg'; // Dùng ảnh mặc định nếu không có
-    
-            $cart[$variant->id] = [
-                'product_id' => $product->id,
-                'name' => $product->name,
-                'image' => $productImage,
-                'price' => $variant->price,
-                'quantity' => 1,
-                'size' => $variant->size,
-            ];
-        }
-    
-        session()->put('cart', $cart);
-    
-        // return response()->json([
-        //     'message' => 'Đã thêm sản phẩm vào giỏ hàng!',
-        //     'cartCount' => count($cart)
-        // ]);
-        $redirectUrl = $request->input('redirect_url', route('client.home'));
-        return redirect($redirectUrl)->with('success', 'Sản phẩm đã được thêm vào giỏ hàng!');
+{
+    $productId = $request->input('product_id');
+    $sizeId = $request->input('size');
+    $quantity = $request->input('quantity', 1); // Default to 1 if not provided
+
+    // Logic to add the product to the cart
+    $cart = session()->get('cart', []);
+
+    // Check if the product is already in the cart
+    if (isset($cart[$sizeId])) {
+        // Update the quantity based on the input
+        $cart[$sizeId]['quantity'] += $quantity; // Increment by the specified quantity
+    } else {
+        // Assuming you have a Product model to get product details
+        $product = Product::find($productId);
+        $productImage = $product->image ?? 'default-image.jpg'; // Use default image if not available
+
+        $cart[$sizeId] = [
+            'product_id' => $product->id,
+            'name' => $product->name,
+            'image' => $productImage,
+            'price' => $product->variants->find($sizeId)->price, // Get the price from the variant
+            'quantity' => $quantity, // Set the quantity from the input
+            'size' => $sizeId,
+        ];
     }
-    
+
+    session()->put('cart', $cart);
+
+    return redirect()->back()->with('success', 'Product added to cart successfully!');
+}
+
 
     public function removeFromCart(Request $request)
     {

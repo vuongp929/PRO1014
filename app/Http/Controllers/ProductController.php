@@ -101,7 +101,7 @@ class ProductController extends Controller
                 foreach ($request->input('variants') as $variant) {
                     $product->variants()->create([
                         'size' => $variant['size'],
-                        'price' => $variant['price'], 
+                        'price' => $variant['price'],
                         'stock' => $variant['stock'] ?? 0,
                     ]);
                 }
@@ -149,4 +149,17 @@ class ProductController extends Controller
 
         return view('clients.search_results', compact('products'));
     }
+    public function show($id)
+{
+    $product = Product::with('variants')->find($id);
+
+    if (!$product) {
+        return redirect()->route('client.home')->with('error', 'Sản phẩm không tồn tại.');
+    }
+
+    // Select the first variant as default
+    $variant = $product->variants->first();
+
+    return view('clients.product_detail', compact('product', 'variant'));
+}
 }
