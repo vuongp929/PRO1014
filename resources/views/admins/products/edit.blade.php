@@ -158,7 +158,7 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-    let variantIndex = 1;
+            let variantIndex = 1;
 
     document.getElementById('add-variant').addEventListener('click', function (e) {
         e.preventDefault();
@@ -186,7 +186,7 @@
             e.target.closest('.variant-row').remove();
         }
     });
-});
+    });
 
 
     </script>
