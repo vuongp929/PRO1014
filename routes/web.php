@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashBoardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\MyOrderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ClientController;
@@ -12,14 +13,15 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
+
 /*
-|---------------------------------------------------------------------- 
-| Web Routes 
-|---------------------------------------------------------------------- 
-| 
-| Here is where you can register web routes for your application. These 
-| routes are loaded by the RouteServiceProvider and all of them will be 
-| assigned to the "web" middleware group. Make something great! 
+|----------------------------------------------------------------------
+| Web Routes
+|----------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will be
+| assigned to the "web" middleware group. Make something great!
 |
 */
 
@@ -47,6 +49,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/logout', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::middleware('auth')->prefix('clients')->group(function () {
+    Route::get('/orders', [MyOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [MyOrderController::class, 'show'])->name('orders.show');
+});
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/email/verify', function () {
@@ -81,6 +89,11 @@ Route::get('/payment/vnpay-return', [PaymentController::class, 'vnpayReturn'])->
 Route::post('payment/vnpay/ipn', [PaymentController::class, 'vnpayIpn'])->name('payment.vnpay.ipn');
 Route::get('/checkout/success', [PaymentController::class, 'paymentVnpaySuccess'])->name('checkout.success');
 Route::get('/checkout/failed', [PaymentController::class, 'paymentFailed'])->name('checkout.failed');
+
+
+
+Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
+
 
 
 require __DIR__.'/auth.php';
