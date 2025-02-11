@@ -17,38 +17,55 @@ class CategoryController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        //
-    }
+{
+    $categories = Category::all(); // Lấy tất cả danh mục
+
+    return view('admins.category.index', compact('categories'));
+}
+
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        //
-    }
+{
+    return view('admins.category.create');
+}
+
+
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCategoryRequest $request)
-    {
-        //
-    }
+    public function store(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255|unique:categories,name',
+        'slug' => 'required|string|max:255|unique:categories,slug',
+    ]);
+
+    Category::create([
+        'name' => $request->name,
+        'slug' => $request->slug,
+    ]);
+
+    return redirect()->route('category.index')->with('success', 'Thêm danh mục thành công!');
+}
+
 
     /**
      * Display the specified resource.
      */
-    public function show(Category $category, $slug)
+    public function showCategory(Category $category, $slug)
     {
         // Lấy danh mục theo slug
         $category = Category::where('slug', $slug)->firstOrFail();
 
         // Lấy sản phẩm theo danh mục và hiển thị
-        $products = Product::where('category_id', $category->id)->get();
+        // $products = Product::where('category_id', $category->id)->get();
+        $products = $category->products()->paginate(10);
 
-        return view('clients.category.show', compact('category', 'products'));
+        return view('clients.categories_search', compact('category', 'products'));
     }
 
     /**
@@ -71,9 +88,11 @@ class CategoryController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Category $category)
-    {
-        //
-    }
+{
+    $category->delete();
+    return redirect()->route('category.index')->with('success', 'Xóa danh mục thành công!');
+}
+
     public function showHeaderCategories()
     {
         $categories = Category::whereNull('parent_id')->with('children')->get(); // Lấy tất cả các danh mục cha và các danh mục con của nó

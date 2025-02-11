@@ -77,6 +77,26 @@
                     </div>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link menu-link" href="#" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarDanhMuc">
+                        <i class="ri-stack-line"></i> <span data-key="t-advance-ui">Quản lý danh mục</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarSanPham">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                            <a href="{{ route('category.index') }}" class="nav-link">
+                                Danh sách
+                            </a>
+                            </li>
+                            <li class="nav-item">
+                            <a href="{{ route('category.create') }}" class="nav-link">
+                                Thêm mới
+                            </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link menu-link" href="/users" role="button"
                         aria-expanded="false" aria-controls="sidebarSanPham">
                         <i class="ri-stack-line"></i> <span data-key="t-advance-ui">Quản lý người dùng</span>
