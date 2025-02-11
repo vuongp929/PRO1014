@@ -15,28 +15,40 @@
     </div>
 
     <h5>Sản phẩm trong đơn hàng</h5>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Sản phẩm</th>
-                <th>Kích thước</th>
-                <th>Màu sắc</th>
-                <th>Số lượng</th>
-                <th>Đơn giá</th>
-                <th>Thành tiền</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($order->orderItems as $item)
-        <tr>
-            <td>{{ $item->productVariant->product->name }}</td>
-            <td>{{ $item->size }}</td> <!-- Lấy size từ order_items -->
-            <td>{{ $item->productVariant->color }}</td>
-            <td>{{ $item->quantity }}</td>
-            <td>{{ number_format($item->price_at_order, 0, ',', '.') }} VNĐ</td> <!-- Giá tại thời điểm đặt hàng -->
-            <td>{{ number_format($item->quantity * $item->price_at_order, 0, ',', '.') }} VNĐ</td>
-        </tr>
-    @endforeach
+    @php
+        $cartItems = json_decode($order->cart, true);
+    @endphp
+    @if(!empty($cartItems))
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Hình ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Giá</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($cartItems as $item)
+                    <tr>
+                        <td>
+                            @if (isset($item['image']))
+                                <img src="{{ Storage::url($item['image']) }}" alt="Hình ảnh sản phẩm" width="100px">
+                            @else
+                                <img src="{{ asset('images/default-product.jpg') }}" alt="Hình ảnh mặc định" width="100px">
+                            @endif
+                        </td>
+                        <td>{{ $item['name'] }}</td>
+                        <td>{{ $item['quantity'] }}</td>
+                        <td>{{ number_format($item['price'], 0, ',', '.') }} VND</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @else
+        <p>Không có sản phẩm trong đơn hàng.</p>
+    @endif
+
         </tbody>
     </table>
 
