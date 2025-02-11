@@ -32,14 +32,23 @@ class DashboardController extends Controller
     foreach ($months as $month) {
         $formattedRevenue[] = $monthlyRevenue->get($month, 0); // Lấy doanh thu hoặc giá trị mặc định là 0
     }
+    $months = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+    $monthlyRevenue = [5000000, 8000000, 10000000, 20000000, 25000000, 15000000, 17000000, 30000000, 22000000, 35000000, 38000000, 45000000];
 
     return view('dashboard', [
-        'ordersCount' => $ordersCount,
-        'revenue' => $revenue,
-        'productsCount' => $productsCount,
-        'months' => ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
-        'monthlyRevenue' => $formattedRevenue,
+        'revenue' => 150000000,
+        'ordersCount' => 1200,
+        'productsCount' => 350,
+        'months' => $months,
+        'monthlyRevenue' => $monthlyRevenue,
     ]);
+    // return view('dashboard', [
+    //     'ordersCount' => $ordersCount,
+    //     'revenue' => $revenue,
+    //     'productsCount' => $productsCount,
+    //     'months' => ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+    //     'monthlyRevenue' => $formattedRevenue,
+    // ]);
 }
 
 

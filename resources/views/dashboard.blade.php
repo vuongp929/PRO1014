@@ -1,98 +1,107 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+@extends('layouts.admin')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div class="mt-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Quản lý</h3>
-                    <div class="space-x-4">
-                        <!-- Nút Quản lý Sản phẩm -->
-                        <a href="{{ route('products.index') }}" class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300">
-                            Quản lý Sản phẩm
-                        </a>
-                
-                        <!-- Nút Quản lý Người dùng -->
-                        <a href="{{ route('users.index') }}" class="inline-block px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300">
-                            Quản lý Người dùng
-                        </a>
-                
-                        <!-- Nút Quản lý Đơn hàng -->
-                        <a href="{{ route('orders.index') }}" class="inline-block px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition duration-300">
-                            Quản lý Đơn hàng
-                        </a>
+@section('title', 'Dashboard')
 
-                        <!-- Nút Quản lý Phản hồi -->
-                        <a href="{{ route('feedback.index') }}" 
-                           class="inline-block px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition duration-300">
-                            <i class="fas fa-comments mr-2"></i>
-                            Quản lý Phản hồi
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Tổng doanh thu -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 text-center">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Tổng doanh thu</h3>
-                    <p class="text-2xl font-bold text-green-600 dark:text-green-400">
-                        {{ number_format($revenue, 0, ',', '.') }} VNĐ
-                    </p>
-                </div>
+@section('CSS')
+<!-- Bạn có thể thêm CSS tùy chỉnh ở đây -->
+<style>
+    .card-bg-soft-primary { background-color: rgba(54, 162, 235, 0.1); }
+    .card-bg-soft-info { background-color: rgba(23, 162, 184, 0.1); }
+    .card-bg-soft-success { background-color: rgba(40, 167, 69, 0.1); }
+    .card-title { font-size: 1.1rem; }
+</style>
+@endsection
 
-                <!-- Tổng số đơn hàng -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 text-center">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Tổng số đơn hàng</h3>
-                    <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ $ordersCount }}</p>
-                </div>
-
-                <!-- Tổng số sản phẩm -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 text-center">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Tổng số sản phẩm</h3>
-                    <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ $productsCount }}</p>
-                </div>
-            </div>
-
-            <!-- Biểu đồ -->
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Biểu đồ doanh thu theo tháng</h3>
-                <canvas id="revenueChart" width="400" height="200"></canvas>
+@section('content')
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3">Dashboard</h1>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const ctx = document.getElementById('revenueChart').getContext('2d');
-        const revenueChart = new Chart(ctx, {
-            type: 'bar', // Hoặc 'line' để hiển thị dạng đường
-            data: {
-                labels: @json($months), // Nhãn các tháng
-                datasets: [{
-                    label: 'Doanh thu (VNĐ)',
-                    data: @json($monthlyRevenue), // Dữ liệu doanh thu theo tháng
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return value.toLocaleString('vi-VN') + ' VNĐ'; // Format tiền tệ
-                            }
+    <!-- Thống kê -->
+    <div class="row mb-4">
+        <!-- Tổng doanh thu -->
+        <div class="col-md-4">
+            <div class="card card-bg-soft-primary shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-primary">Tổng doanh thu</h5>
+                    <p class="display-6 fw-bold text-primary">
+                        {{ number_format($revenue, 0, ',', '.') }} VNĐ
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- Tổng số đơn hàng -->
+        <div class="col-md-4">
+            <div class="card card-bg-soft-info shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-info">Tổng số đơn hàng</h5>
+                    <p class="display-6 fw-bold text-info">{{ $ordersCount }}</p>
+                </div>
+            </div>
+        </div>
+        <!-- Tổng số sản phẩm -->
+        <div class="col-md-4">
+            <div class="card card-bg-soft-success shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-success">Tổng số sản phẩm</h5>
+                    <p class="display-6 fw-bold text-success">{{ $productsCount }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biểu đồ doanh thu theo tháng -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Biểu đồ doanh thu theo tháng</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="revenueChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('JS')
+<!-- Chart.js từ CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    const revenueChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: @json($months),
+            datasets: [{
+                label: 'Doanh thu (VNĐ)',
+                data: @json($monthlyRevenue),
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString('vi-VN') + ' VNĐ';
                         }
                     }
                 }
             }
-        });
-    </script>
-</x-app-layout>
-
+        }
+    });
+</script>
+@endsection

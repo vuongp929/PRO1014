@@ -73,5 +73,6 @@ class OrderController extends Controller
         return redirect()->route('payment.vnpay.qr', ['orderId' => $order->id]);
     }
 
-    
+
 }
+

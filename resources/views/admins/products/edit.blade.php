@@ -79,10 +79,10 @@
                                                 <div class="category-selection">
                                                     @foreach($categories as $category)
                                                         <div class="category-item">
-                                                            <input type="checkbox" 
-                                                                id="category_{{ $category->id }}" 
-                                                                name="category_ids[]" 
-                                                                value="{{ $category->id }}" 
+                                                            <input type="checkbox"
+                                                                id="category_{{ $category->id }}"
+                                                                name="category_ids[]"
+                                                                value="{{ $category->id }}"
                                                                 {{ in_array($category->id, $product->categories->pluck('id')->toArray()) ? 'checked' : '' }}
                                                             />
                                                             <label for="category_{{ $category->id }}" class="category-label">{{ $category->name }}</label>
@@ -156,8 +156,6 @@
     <script>
         CKEDITOR.replace('description');
     </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
         let variantIndex = 1;
 
         document.getElementById('add-variant').addEventListener('click', function (e) {
@@ -188,4 +186,5 @@
         });
     });
     </script>
+
 @endsection
