@@ -88,6 +88,8 @@ Route::get('/payment/vnpay-return', [PaymentController::class, 'vnpayReturn'])->
 Route::post('payment/vnpay/ipn', [PaymentController::class, 'vnpayIpn'])->name('payment.vnpay.ipn');
 Route::get('/checkout/success', [PaymentController::class, 'paymentVnpaySuccess'])->name('checkout.success');
 Route::get('/checkout/failed', [PaymentController::class, 'paymentFailed'])->name('checkout.failed');
+Route::get('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('client.orders.cancel');
+
 
 
 require __DIR__.'/auth.php';

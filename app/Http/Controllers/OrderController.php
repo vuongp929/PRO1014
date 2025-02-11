@@ -72,6 +72,29 @@ class OrderController extends Controller
 
         return redirect()->route('payment.vnpay.qr', ['orderId' => $order->id]);
     }
+ // Hủy đơn hàng
+ public function cancel($id)
+ {
+     // Tìm đơn hàng theo ID
+     $order = Order::findOrFail($id);
 
+     // Kiểm tra trạng thái của đơn hàng có thể hủy hay không
+     if ($order->status != 'Đang chờ xử lý') {
+         return redirect()->route('client.orders.index')->with('error', 'Đơn hàng không thể hủy vì trạng thái hiện tại.');
+     }
+
+     // Cập nhật trạng thái đơn hàng thành "Đã hủy"
+     $order->status = 'Đã hủy';
+     $order->save();
+
+     // Nếu có các món hàng (OrderItem) liên quan, cũng cập nhật trạng thái của chúng thành "Đã hủy"
+     foreach ($order->orderItems as $orderItem) {
+         $orderItem->status = 'Đã hủy';
+         $orderItem->save();
+     }
+
+     // Thông báo cho người dùng
+     return redirect()->route('client.orders.index')->with('success', 'Đơn hàng đã được hủy thành công.');
+ }
     
 }
