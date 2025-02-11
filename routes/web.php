@@ -11,6 +11,8 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FeedbackController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -45,20 +47,36 @@ Route::middleware(['auth', 'check.admin'])->group(function () {
         Route::get('/add-to-cart/{productId}', [ProductController::class, 'addToCart'])->name('products.add-to-cart');
         Route::resource('orders', OrderController::class);
         Route::resource('users', UserController::class);
-        
+
 
     });
 });
 
 Route::middleware('auth')->group(function () {
+    Route::resource('products', ProductController::class);
+    Route::get('/add-to-cart/{productId}', [ProductController::class, 'addToCart'])->name('products.add-to-cart');
+    Route::resource('orders', OrderController::class);
+    Route::resource('users', UserController::class);
+    Route::resource('category', CategoryController::class);
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/logout', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // route admin feedback
+    Route::resource('feedback', FeedbackController::class);
+    Route::get('feedback/{feedback}', [FeedbackController::class, 'show'])
+        ->name('feedback.show');
+    Route::delete('feedback/{feedback}', [FeedbackController::class, 'destroy'])
+        ->name('feedback.destroy');
+    Route::patch('feedback/{feedback}/update-status', [FeedbackController::class, 'updateStatus'])->name('feedback.update-status');
 });
 
 Route::middleware('auth')->prefix('clients')->group(function () {
     Route::get('/orders', [MyOrderController::class, 'index'])->name('client.orders.index');
     Route::get('/orders/{order}', [MyOrderController::class, 'show'])->name('client.orders.show');
+    Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+
 });
 
 
@@ -97,6 +115,8 @@ Route::get('/checkout/success', [PaymentController::class, 'paymentVnpaySuccess'
 Route::get('/checkout/failed', [PaymentController::class, 'paymentFailed'])->name('checkout.failed');
 Route::get('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('client.orders.cancel');
 
+
+Route::get('/contact', [ContactController::class, 'index'])->name('client.contact');
 
 
 

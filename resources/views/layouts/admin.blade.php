@@ -12,7 +12,7 @@
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
 
-    <title>@yield('title')</title>
+    <title>@yield('title') - Admin Dashboard</title>
     {{-- Điền các link CSS dùng chung --}}
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('assets/admins/images/favicon.ico') }}">
@@ -33,10 +33,17 @@
     <link href="{{ asset('assets/admins/css/app.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- custom Css-->
     <link href="{{ asset('assets/admins/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
-    @yield('CSS')
+
+    <!-- Custom fonts -->
+    <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles -->
+    <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
+    @stack('styles')
 </head>
 
-<body>
+<body id="page-top">
     <div id="layout-wrapper">
 
         @include('admins.blocks.header')
@@ -80,8 +87,17 @@
 
     <!-- App js -->
     <script src="{{ asset('assets/admins/js/app.js') }}"></script>
-    </script>
-    @yield('JS')
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+
+    <!-- Custom scripts -->
+    <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
+    @stack('scripts')
 </body>
 
 </html>

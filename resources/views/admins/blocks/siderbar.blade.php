@@ -77,6 +77,26 @@
                     </div>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link menu-link" href="#" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarDanhMuc">
+                        <i class="ri-stack-line"></i> <span data-key="t-advance-ui">Quản lý danh mục</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarSanPham">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                            <a href="{{ route('category.index') }}" class="nav-link">
+                                Danh sách
+                            </a>
+                            </li>
+                            <li class="nav-item">
+                            <a href="{{ route('category.create') }}" class="nav-link">
+                                Thêm mới
+                            </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link menu-link" href="{{ route('users.index') }}" role="button"
                         aria-expanded="false" aria-controls="sidebarSanPham">
                         <i class="ri-stack-line"></i> <span data-key="t-advance-ui">Quản lý người dùng</span>
@@ -87,6 +107,11 @@
                     <a class="nav-link menu-link" href="{{ route('orders.index') }}" role="button"
                         aria-expanded="false" aria-controls="sidebarSanPham">
                         <i class="ri-stack-line"></i> <span data-key="t-advance-ui">Quản lý đơn hàng</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="/feedback" role="button">
+                        <i class="ri-message-2-line"></i> <span data-key="t-advance-ui">Quản lý phản hồi</span>
                     </a>
                 </li>
 
