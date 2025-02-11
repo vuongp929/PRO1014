@@ -72,6 +72,6 @@
     <h4 class="mt-4">Trạng thái đơn hàng</h4>
     <p>{{ $order->status }}</p>
 
-    <a href="{{ route('orders.index') }}" class="btn btn-primary mt-3">Quay lại danh sách đơn hàng</a>
+    <a href="{{ route('client.orders.index') }}" class="btn btn-primary mt-3">Quay lại danh sách đơn hàng</a>
 </div>
 @endsection

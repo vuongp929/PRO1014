@@ -122,8 +122,12 @@ h1, h2, h3, h4, h5, h6 {
                 <!-- Nút đăng nhập/đăng ký và giỏ hàng -->
                 <div class="header-right">
                     @if(auth()->check())
-                        <a href="{{ route('logout') }}" class="btn btn-link">Đăng xuất</a>
-                        <a href="{{ route('orders.index') }}" class="btn btn-link">
+                    
+                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="btn btn-link">Đăng xuất</a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                        <a href="{{ route('client.orders.index') }}" class="btn btn-link">
                             Đơn hàng
                         </a>
                     @else

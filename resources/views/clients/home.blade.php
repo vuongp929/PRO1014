@@ -142,14 +142,13 @@
                         <img src="{{ asset('storage/'.$product->image) }}" class="card-img-top" alt="{{ $product->name }}">
                         <div class="card-body">
                             <h5 class="card-title text-truncate" title="{{ $product->name }}">{{ $product->name }}</h5>
-
                             <form action="{{ route('cart.add') }}" method="POST" onsubmit="return validateSizeSelection({{ $product->id }})">
                                 @csrf
                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                 <input type="hidden" id="selected-size-{{ $product->id }}" name="size" value="{{ optional($product->variants->first())->id }}">
                                 <input type="hidden" name="redirect_url" value="{{ url()->current() }}">
                                 <!-- Nút chọn size -->
-                </a>
+                                
                                 <div class="size-buttons">
                                     @foreach ($product->variants as $variant)
                                         <button type="button" class="size-button"
@@ -160,7 +159,6 @@
                                         </button>
                                     @endforeach
                                 </div>
-
                                 <!-- Giá sản phẩm -->
                                 <p class="price mt-2">
                                     Giá: <span id="product-price-{{ $product->id }}">{{ number_format(optional($product->variants->first())->price ?? 0) }} VND</span>
@@ -181,6 +179,40 @@
 <script>
     // Hàm chọn size và cập nhật giao diện
 
+    document.addEventListener('DOMContentLoaded', function () {
+    // Lấy tất cả các form trong trang có class 'ajax-form'
+    const ajaxForms = document.querySelectorAll('form.ajax-form');
+    
+    ajaxForms.forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Thu thập dữ liệu từ form
+            const formData = new FormData(form);
+            const actionUrl = form.action;
+
+            // Gửi AJAX request
+            fetch(actionUrl, {
+                method: form.method || 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                }
+            }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Thao tác thành công!');
+                    // Tải lại trang hoặc cập nhật giỏ hàng nếu cần
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    }
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra.');
+                }
+            }).catch(error => console.error('Lỗi AJAX:', error));
+        });
+    });
+});
 
 </script>
 @endsection

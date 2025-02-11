@@ -36,8 +36,19 @@ Route::get('/search', [ProductController::class, 'search'])->name('client.search
 
 
 Route::get('/dashboard', [DashBoardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+            ->middleware(['auth', 'verified'])
+            ->name('dashboard');
+
+Route::middleware(['auth', 'check.admin'])->group(function () {
+    Route::prefix('admin')->group(function () {
+        Route::resource('products', ProductController::class);
+        Route::get('/add-to-cart/{productId}', [ProductController::class, 'addToCart'])->name('products.add-to-cart');
+        Route::resource('orders', OrderController::class);
+        Route::resource('users', UserController::class);
+
+
+    });
+});
 
 Route::middleware('auth')->group(function () {
     Route::resource('products', ProductController::class);
@@ -52,8 +63,8 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->prefix('clients')->group(function () {
-    Route::get('/orders', [MyOrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [MyOrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders', [MyOrderController::class, 'index'])->name('client.orders.index');
+    Route::get('/orders/{order}', [MyOrderController::class, 'show'])->name('client.orders.show');
 });
 
 
