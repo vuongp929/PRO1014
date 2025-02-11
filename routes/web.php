@@ -47,12 +47,18 @@ Route::middleware(['auth', 'check.admin'])->group(function () {
         Route::get('/add-to-cart/{productId}', [ProductController::class, 'addToCart'])->name('products.add-to-cart');
         Route::resource('orders', OrderController::class);
         Route::resource('users', UserController::class);
-        
+
 
     });
 });
 
 Route::middleware('auth')->group(function () {
+    Route::resource('products', ProductController::class);
+    Route::get('/add-to-cart/{productId}', [ProductController::class, 'addToCart'])->name('products.add-to-cart');
+    Route::resource('orders', OrderController::class);
+    Route::resource('users', UserController::class);
+    Route::resource('category', CategoryController::class);
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/logout', [ProfileController::class, 'destroy'])->name('profile.destroy');
