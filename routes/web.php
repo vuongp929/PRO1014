@@ -11,6 +11,8 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FeedbackController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -54,11 +56,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/logout', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // route admin feedback
+    Route::resource('feedback', FeedbackController::class);
+    Route::get('feedback/{feedback}', [FeedbackController::class, 'show'])
+        ->name('feedback.show');
+    Route::delete('feedback/{feedback}', [FeedbackController::class, 'destroy'])
+        ->name('feedback.destroy');
+    Route::patch('feedback/{feedback}/update-status', [FeedbackController::class, 'updateStatus'])->name('feedback.update-status');
 });
 
 Route::middleware('auth')->prefix('clients')->group(function () {
     Route::get('/orders', [MyOrderController::class, 'index'])->name('client.orders.index');
     Route::get('/orders/{order}', [MyOrderController::class, 'show'])->name('client.orders.show');
+    Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+
 });
 
 
@@ -95,6 +107,8 @@ Route::get('/payment/vnpay-return', [PaymentController::class, 'vnpayReturn'])->
 Route::post('payment/vnpay/ipn', [PaymentController::class, 'vnpayIpn'])->name('payment.vnpay.ipn');
 Route::get('/checkout/success', [PaymentController::class, 'paymentVnpaySuccess'])->name('checkout.success');
 Route::get('/checkout/failed', [PaymentController::class, 'paymentFailed'])->name('checkout.failed');
+
+Route::get('/contact', [ContactController::class, 'index'])->name('client.contact');
 
 
 
