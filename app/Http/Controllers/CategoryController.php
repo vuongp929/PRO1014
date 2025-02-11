@@ -71,18 +71,31 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Category $category)
+    public function edit($id)
     {
-        //
+        $category = Category::findOrFail($id);
+        return view('admins.category.edit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCategoryRequest $request, Category $category)
-    {
-        //
-    }
+    public function update(Request $request, $id)
+{
+    $category = Category::findOrFail($id);
+
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'slug' => 'required|string|max:255|unique:categories,slug,' . $id,
+    ]);
+
+    $category->update([
+        'name' => $request->name,
+        'slug' => $request->slug,
+    ]);
+
+    return redirect()->route('category.index')->with('success', 'Cập nhật danh mục thành công!');
+}
 
     /**
      * Remove the specified resource from storage.

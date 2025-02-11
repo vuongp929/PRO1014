@@ -19,8 +19,8 @@
                         <td>{{ $category->name }}</td>
                         <td>{{ $category->slug }}</td>
                         <td>
-                            <a href="{{ route('category.edit', $category->id) }}" class="btn btn-warning">Sửa</a>
-                            <form action="{{ route('category.destroy', $category->id) }}" method="POST" style="display:inline;">
+                        <a href="{{ route('category.edit', $category->id) }}" class="btn btn-warning">Chỉnh sửa</a>
+                        <form action="{{ route('category.destroy', $category->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</button>
