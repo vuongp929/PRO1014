@@ -53,10 +53,6 @@ class CheckoutController extends Controller
         $totalAmount = array_reduce($cart, function ($sum, $item) {
             return $sum + ($item['price'] * $item['quantity']);
         }, 0);
-
-        if ($totalAmount < 5000 || $totalAmount >= 1000000000) {
-            return redirect()->route('cart.view')->with('error', 'Số tiền thanh toán không hợp lệ.');
-        }
         
         $order = new Order();
         $order->user_id = Auth::id();

@@ -40,15 +40,16 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Category $category, $slug)
+    public function showCategory(Category $category, $slug)
     {
         // Lấy danh mục theo slug
         $category = Category::where('slug', $slug)->firstOrFail();
 
         // Lấy sản phẩm theo danh mục và hiển thị
-        $products = Product::where('category_id', $category->id)->get();
+        // $products = Product::where('category_id', $category->id)->get();
+        $products = $category->products()->paginate(10);
 
-        return view('clients.category.show', compact('category', 'products'));
+        return view('clients.categories_search', compact('category', 'products'));
     }
 
     /**

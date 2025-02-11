@@ -52,7 +52,7 @@
             <ul class="navbar-nav" id="navbar-nav">
                 <li class="menu-title"><span data-key="t-menu">Quản lý</span></li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="/dashboard">
+                    <a class="nav-link menu-link" href="{{ route('dashboard') }}">
                         <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Dashboards</span>
                     </a>
                 </li>
@@ -64,12 +64,12 @@
                     <div class="collapse menu-dropdown" id="sidebarSanPham">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="/products" class="nav-link" data-key="t-sweet-alerts">
+                                <a href="{{ route('products.index') }}" class="nav-link" data-key="t-sweet-alerts">
                                     Danh sách
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="/products/create" class="nav-link" data-key="t-nestable-list">
+                                <a href="{{ route('products.create') }}" class="nav-link" data-key="t-nestable-list">
                                     Thêm mới
                                 </a>
                             </li>
@@ -77,18 +77,25 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="/users" role="button"
+                    <a class="nav-link menu-link" href="{{ route('users.index') }}" role="button"
                         aria-expanded="false" aria-controls="sidebarSanPham">
                         <i class="ri-stack-line"></i> <span data-key="t-advance-ui">Quản lý người dùng</span>
                     </a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="/orders" role="button"
+                    <a class="nav-link menu-link" href="{{ route('orders.index') }}" role="button"
                         aria-expanded="false" aria-controls="sidebarSanPham">
                         <i class="ri-stack-line"></i> <span data-key="t-advance-ui">Quản lý đơn hàng</span>
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('client.home') }}" role="button"
+                        aria-expanded="false" aria-controls="sidebarSanPham">
+                        <i class="ri-stack-line"></i> <span data-key="t-advance-ui">Trang chủ</span>
+                    </a>
+                </li>
             </ul>
         </div>
         <!-- Sidebar -->
