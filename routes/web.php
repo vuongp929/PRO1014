@@ -62,6 +62,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->prefix('clients')->group(function () {
     Route::get('/orders', [MyOrderController::class, 'index'])->name('client.orders.index');
     Route::get('/orders/{order}', [MyOrderController::class, 'show'])->name('client.orders.show');
+    Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+
 });
 
 
@@ -101,6 +103,5 @@ Route::get('/checkout/failed', [PaymentController::class, 'paymentFailed'])->nam
 
 Route::get('/contact', [ContactController::class, 'index'])->name('client.contact');
 
-Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
 
 require __DIR__.'/auth.php';
