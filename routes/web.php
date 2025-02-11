@@ -36,15 +36,21 @@ Route::get('/search', [ProductController::class, 'search'])->name('client.search
 
 
 Route::get('/dashboard', [DashBoardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+            ->middleware(['auth', 'verified'])
+            ->name('dashboard');
+
+Route::middleware(['auth', 'check.admin'])->group(function () {
+    Route::prefix('admin')->group(function () {
+        Route::resource('products', ProductController::class);
+        Route::get('/add-to-cart/{productId}', [ProductController::class, 'addToCart'])->name('products.add-to-cart');
+        Route::resource('orders', OrderController::class);
+        Route::resource('users', UserController::class);
+        
+
+    });
+});
 
 Route::middleware('auth')->group(function () {
-    Route::resource('products', ProductController::class);
-    Route::get('/add-to-cart/{productId}', [ProductController::class, 'addToCart'])->name('products.add-to-cart');
-    Route::resource('orders', OrderController::class);
-    Route::resource('users', UserController::class);
-
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/logout', [ProfileController::class, 'destroy'])->name('profile.destroy');

@@ -15,7 +15,6 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        // Chỉ cho phép người dùng có vai trò 'admin' mới có quyền chỉnh sửa và xóa người dùng
         $this->middleware('can:update,user')->only(['edit', 'update']);
         $this->middleware('can:delete,user')->only(['destroy']);
     }
@@ -47,13 +46,13 @@ class UserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
     
-        $role = $request->input('role', 'customer'); // Mặc định là 'customer'
+        $role = $request->input('role', 'customer');
     
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $role, // Xác định role khi tạo user
+            'role' => $role,
         ]);
     
         Auth::login($user);
@@ -88,21 +87,20 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'role' => 'required|in:admin,customer',
-            'password' => 'nullable|min:3|confirmed', // Thêm nếu có cập nhật mật khẩu
+            'password' => 'nullable|min:3|confirmed',
         ]);
 
-        // Chỉ cập nhật các trường được gửi từ request
         $data = $request->only(['name', 'email', 'role']);
 
-        // Nếu có password, mã hóa và thêm vào danh sách cập nhật
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
 
-        // Cập nhật thông tin người dùng
         $user->update($data);
-
-        // Redirect về trang danh sách người dùng với thông báo thành công
+        if (Auth::user()->id === $user->id && $request->role !== 'admin') {
+            Auth::logout(); // Đăng xuất nếu tự hạ cấp quyền
+            return redirect()->route('login')->with('warning', 'Quyền của bạn đã thay đổi. Vui lòng đăng nhập lại!');
+        }
         return redirect()->route('users.index')->with('success', 'Cập nhật thành công!');
     }
 
