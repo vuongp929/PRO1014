@@ -33,7 +33,6 @@ Route::get('/welcome', function () {
 });
 
 Route::get('/', [ClientController::class, 'index'])->name('client.home');
-Route::get('/category/{slug}', [CategoryController::class, 'showCategory'])->name('client.category');
 Route::get('/search', [ProductController::class, 'search'])->name('client.search');
 
 
@@ -79,6 +78,7 @@ Route::middleware('auth')->prefix('clients')->group(function () {
 
 });
 
+Route::get('/category/{slug}', [CategoryController::class, 'showCategory'])->name('client.category');
 
 Route::middleware('auth')->group(function () {
     Route::get('/email/verify', function () {

@@ -28,9 +28,10 @@ class CategoryController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-{
-    return view('admins.category.create');
-}
+    {
+        return view('admins.category.create');
+    }
+
 
 
 
@@ -42,15 +43,25 @@ class CategoryController extends Controller
     $request->validate([
         'name' => 'required|string|max:255|unique:categories,name',
         'slug' => 'required|string|max:255|unique:categories,slug',
+        'parent_id' => 'nullable|exists:categories,id',
     ]);
 
     Category::create([
         'name' => $request->name,
         'slug' => $request->slug,
+        'parent_id' => $request->parent_id, // Lưu danh mục cha nếu có
     ]);
 
     return redirect()->route('category.index')->with('success', 'Thêm danh mục thành công!');
 }
+
+
+public function add()
+{
+    $categories = Category::whereNull('parent_id')->get(); // Lấy danh mục cha
+    return view('admins.category.Add', compact('categories'));
+}
+
 
 
     /**
@@ -111,4 +122,5 @@ class CategoryController extends Controller
         $categories = Category::whereNull('parent_id')->with('children')->get(); // Lấy tất cả các danh mục cha và các danh mục con của nó
         return view('layouts.client', compact('categories'));
     }
+
 }
