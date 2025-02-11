@@ -77,7 +77,6 @@
                     </div>
                 </li>
                 <li class="nav-item">
-<<<<<<< HEAD
                     <a class="nav-link menu-link" href="#" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarDanhMuc">
                         <i class="ri-stack-line"></i> <span data-key="t-advance-ui">Quản lý danh mục</span>
