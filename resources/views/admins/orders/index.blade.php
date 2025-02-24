@@ -1,8 +1,10 @@
 @extends('layouts.admin')
 
+
 @section('title', 'Quản lý đơn hàng')
 
 @section('content')
+
 <div class="container-fluid">
     <h4 class="mb-4">Danh sách đơn hàng</h4>
 
@@ -35,11 +37,14 @@
                             @csrf
                             @method('PUT')
                             <select name="status" onchange="this.form.submit()" class="form-select form-select-sm">
-                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Chờ xử lý</option>
-                                <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Hoàn thành</option>
-                                <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Hủy</option>
+                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Đang chờ thanh toán</option>
+                                <option value="processing" {{ $order->status == 'processing' ? 'selected' : ''}}>Đang chờ duyệt đơn</option>
+                                <option value="shipping" {{ $order->status == 'shipping' ? 'selected' : '' }}>Đơn hàng đang được giao</option>
+                                <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Đơn hàng đã giao thành công</option>
+                                <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Nhận hàng thành công</option>
+                                <option class="text-red-500" value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Hủy</option>
                             </select>
-                        </form>                        
+                        </form>
                     </td>
                 </tr>
             @empty

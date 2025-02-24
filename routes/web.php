@@ -11,6 +11,8 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\OfferController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -44,8 +46,6 @@ Route::middleware(['auth', 'check.admin'])->group(function () {
         Route::get('/add-to-cart/{productId}', [ProductController::class, 'addToCart'])->name('products.add-to-cart');
         Route::resource('orders', OrderController::class);
         Route::resource('users', UserController::class);
-
-
     });
 });
 
@@ -55,6 +55,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('orders', OrderController::class);
     Route::resource('users', UserController::class);
     Route::resource('category', CategoryController::class);
+    Route::resource('offers', OfferController::class);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -87,13 +88,18 @@ Route::middleware(['web', 'auth'])->prefix('clients')->group(function () {
     Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
+    Route::post('/cart/apply-discount', [CheckoutController::class, 'applyDiscount'])->name('cart.apply-discount');
 });
 
 
 Route::prefix('clients')->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+
+    // Route áp dụng mã giảm giá
+    Route::post('/cart/apply-discount', [DiscountController::class, 'applyDiscount'])->name('cart.apply-discount');
 });
+
 
 Route::get('/payment/vnpay/order/{orderId}', [PaymentController::class, 'createQRPayment'])
     ->name('payment.vnpay.qr');

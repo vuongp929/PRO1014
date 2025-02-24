@@ -97,6 +97,26 @@
                     </div>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebarGiamGia" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarGiamGia">
+                        <i class="ri-stack-line"></i> <span data-key="t-advance-ui">Quản lý mã giảm giá</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarGiamGia">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ route('offers.index') }}" class="nav-link">
+                                    Danh sách
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('offers.create') }}" class="nav-link">
+                                    Thêm mới
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link menu-link" href="{{ route('users.index') }}" role="button"
                         aria-expanded="false" aria-controls="sidebarSanPham">
                         <i class="ri-stack-line"></i> <span data-key="t-advance-ui">Quản lý người dùng</span>

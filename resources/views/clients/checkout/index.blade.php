@@ -39,6 +39,24 @@
         </table>
 
         <h3 class="mt-4">Thông tin khách hàng</h3>
+        <h4 class="mt-4">Nhập mã giảm giá</h4>
+            <form action="{{ route('cart.apply-discount') }}" method="POST" class="d-flex">
+                @csrf
+                <input type="text" name="code" class="form-control me-2" placeholder="Nhập mã giảm giá" required>
+                <button type="submit" class="btn btn-success">Áp dụng</button>
+            </form>
+
+            @if(session('error'))
+                <div class="alert alert-danger mt-2">{{ session('error') }}</div>
+            @endif
+
+            @if(session('success'))
+                <div class="alert alert-success mt-2">{{ session('success') }}</div>
+            @endif
+
+            @if(session('discount'))
+                <h5 class="mt-3 text-success">Đã áp dụng mã giảm giá: Giảm {{ session('discount') }}%</h5>
+            @endif
         <form action="{{ route('checkout.store') }}" method="POST">
             @csrf
 
@@ -85,6 +103,10 @@
                     Thanh toán khi nhận hàng (COD)
                 </label>
             </div>
+            <br>
+
+
+            <h4>Tổng cộng: {{ number_format($total_price) }} VND</h4>
 
             @if(optional($order)->payment_status == 'paid')
                 <p>Đơn hàng của bạn đã được thanh toán và đang được xử lý.</p>
