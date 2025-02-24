@@ -1,10 +1,12 @@
 <?php
 
-use App\Http\Controllers\{ 
-    ProfileController, DashBoardController, ProductController, OrderController, 
-    MyOrderController, UserController, PaymentController, ClientController, 
-    CartController, CheckoutController, CategoryController, ContactController, FeedbackController 
+use App\Http\Controllers\{
+    ProfileController, DashBoardController, ProductController, OrderController,
+    MyOrderController, UserController, PaymentController, ClientController,
+    CartController, CheckoutController, CategoryController, ContactController, DiscountController, FeedbackController,
+    OfferController
 };
+use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 
 // Route cho trang chủ
@@ -22,6 +24,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::resource('orders', OrderController::class);
     Route::resource('users', UserController::class);
     Route::resource('feedback', FeedbackController::class);
+    Route::resource('offers', OfferController::class);
+    Route::resource('category', CategoryController::class);
     Route::get('/add-to-cart/{productId}', [ProductController::class, 'addToCart'])->name('products.add-to-cart');
 });
 
@@ -30,11 +34,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/logout', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
     Route::prefix('clients')->group(function () {
         Route::get('/orders', [MyOrderController::class, 'index'])->name('client.orders.index');
         Route::get('/orders/{order}', [MyOrderController::class, 'show'])->name('client.orders.show');
         Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+
     });
 
     Route::prefix('cart')->group(function () {
@@ -49,6 +54,7 @@ Route::middleware(['auth'])->group(function () {
 Route::prefix('checkout')->group(function () {
     Route::get('/', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::post('/cart/apply-discount', [DiscountController::class, 'applyDiscount'])->name('cart.apply-discount');
 });
 
 // Payment VNPay

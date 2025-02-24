@@ -142,13 +142,14 @@
                         <img src="{{ asset('storage/'.$product->image) }}" class="card-img-top" alt="{{ $product->name }}">
                         <div class="card-body">
                             <h5 class="card-title text-truncate" title="{{ $product->name }}">{{ $product->name }}</h5>
+                            </a>
                             <form action="{{ route('cart.add') }}" method="POST" onsubmit="return validateSizeSelection({{ $product->id }})">
                                 @csrf
                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                 <input type="hidden" id="selected-size-{{ $product->id }}" name="size" value="{{ optional($product->variants->first())->id }}">
                                 <input type="hidden" name="redirect_url" value="{{ url()->current() }}">
                                 <!-- Nút chọn size -->
-                                
+
                                 <div class="size-buttons">
                                     @foreach ($product->variants as $variant)
                                         <button type="button" class="size-button"
@@ -167,7 +168,7 @@
                             </form>
                         </div>
                     </div>
-                    </a>
+
                 </div>
             @endforeach
         </div>
@@ -182,7 +183,7 @@
     document.addEventListener('DOMContentLoaded', function () {
     // Lấy tất cả các form trong trang có class 'ajax-form'
     const ajaxForms = document.querySelectorAll('form.ajax-form');
-    
+
     ajaxForms.forEach(form => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();

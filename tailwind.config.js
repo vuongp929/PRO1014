@@ -19,3 +19,11 @@ export default {
 
     plugins: [forms],
 };
+
+module.exports = {
+    content: ["./resources/**/*.blade.php", "./src/**/*.{js,ts,jsx,tsx}"],
+    theme: {
+      extend: {},
+    },
+    plugins: [],
+  }

@@ -15,7 +15,6 @@
                   <a href="#" class="icon"><img src="/assets/icons/tiktok.svg" alt="Tiktok"></a>
               </div>
           </div>
-
           <!-- Thông tin thanh toán -->
           <div class="col-md-4 bank-info">
               <h5>Thông Tin Thanh Toán</h5>
