@@ -28,13 +28,15 @@ class CheckoutController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         $data = $request->validate([
             'name'    => 'required|string|max:255',
-            'phone'   => 'required|string|max:20',
+            'phone'   => 'required|string|max:255',
             'email'   => 'required|email|max:255',
             'shipping_address' => 'required|string|max:255',
             'payment_method' => 'required|in:vnpay,cod'
         ]);
+        // dd('Validation Passed!', $data);
 
         if (Auth::check()) {
             $user = Auth::user();
@@ -62,10 +64,14 @@ class CheckoutController extends Controller
         $order->cart = json_encode($cart);
         $order->payment_method = $data['payment_method'];
         $order->save();
+
+        session()->forget('cart');
     
         if ($data['payment_method'] == 'vnpay') {
+            // dd('Redirecting to VNPay...');
             return redirect()->route('payment.vnpay.qr', ['orderId' => $order->id]);
         } else {
+            // dd('Redirecting to COD...');
             $order->payment_status = 'cod';
             $order->status = 'processing';
             $order->save();

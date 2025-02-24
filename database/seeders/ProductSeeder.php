@@ -10,10 +10,8 @@ class ProductSeeder extends Seeder
 {
     public function run()
     {
-        // Lấy tất cả các danh mục
         $categories = Category::all();
 
-        // Tạo 10 sản phẩm
         for ($i = 1; $i <= 10; $i++) {
             // Tạo hoặc cập nhật sản phẩm
             $product = Product::updateOrCreate(
@@ -30,6 +28,7 @@ class ProductSeeder extends Seeder
                     'product_id' => $product->id,
                     'size' => 'Size ' . ['S', 'M', 'L'][$j - 1],
                     'price' => rand(100000, 500000),
+                    'stock' => rand(10, 50),
                 ]);
             }
 
