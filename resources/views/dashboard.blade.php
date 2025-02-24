@@ -66,6 +66,7 @@
                 <div class="card-body">
                     <canvas id="revenueChart" height="200"></canvas>
                 </div>
+                
             </div>
         </div>
     </div>
@@ -73,11 +74,17 @@
 @endsection
 
 @section('JS')
-<!-- Chart.js từ CDN -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js" defer></script>
+
 <script>
-    const ctx = document.getElementById('revenueChart').getContext('2d');
-    const revenueChart = new Chart(ctx, {
+    document.addEventListener("DOMContentLoaded", function () {
+    const ctx = document.getElementById('revenueChart');
+    if (!ctx) {
+        console.error("Không tìm thấy #revenueChart");
+        return;
+    }
+    new Chart(ctx.getContext('2d'), {
         type: 'bar',
         data: {
             labels: @json($months),
@@ -103,5 +110,6 @@
             }
         }
     });
+});
 </script>
 @endsection

@@ -24,13 +24,14 @@ class AuthController extends Controller
 
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard')->with('success', 'Đăng nhập admin thành công!');
+            } else {
+                return redirect()->route('client.home')->with('success', 'Đăng nhập thành công!');
             }
-
-            return redirect()->route('client.home')->with('success', 'Đăng nhập thành công!');
         }
 
         return back()->withErrors(['error' => 'Thông tin đăng nhập không chính xác.']);
     }
+
 
     public function handle($request, Closure $next)
     {

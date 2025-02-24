@@ -28,6 +28,10 @@
                     <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
                     <td>
                         <a href="{{ route('client.orders.show', $order->id) }}" class="btn btn-info">Xem chi tiết</a>
+                   
+                <!-- Hiển thị nút hủy nếu trạng thái là "Đang chờ xử lý" -->
+                <a href="{{ route('client.orders.cancel', $order->id) }}" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')">Hủy đơn hàng</a>
+        
                     </td>
                 </tr>
                 @endforeach
