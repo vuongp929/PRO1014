@@ -125,3 +125,8 @@ Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.s
 
 
 require __DIR__.'/auth.php';
+
+use App\Http\Controllers\PostController;
+
+Route::get('/posts', [PostController::class, 'index'])->name('client.posts.index'); // Danh sách bài viết
+Route::get('/posts/{slug}', [PostController::class, 'show'])->name('client.posts.show'); // Chi tiết bài viết

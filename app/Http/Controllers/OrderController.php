@@ -78,7 +78,6 @@ class OrderController extends Controller
      // Tìm đơn hàng theo ID
      $order = Order::findOrFail($id);
 
-<<<<<<< HEAD
      // Kiểm tra trạng thái của đơn hàng có thể hủy hay không
      if ($order->status != 'Đang chờ xử lý') {
          return redirect()->route('client.orders.index')->with('error', 'Đơn hàng không thể hủy vì trạng thái hiện tại.');
@@ -98,7 +97,4 @@ class OrderController extends Controller
      return redirect()->route('client.orders.index')->with('success', 'Đơn hàng đã được hủy thành công.');
  }
     
-=======
-
->>>>>>> cd7f6671261812497adf381b46c96f4440ee0d44
 }

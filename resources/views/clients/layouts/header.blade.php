@@ -168,6 +168,9 @@ h1, h2, h3, h4, h5, h6 {
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('client.contact') }}">Liên hệ</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('client.posts.index') }}">Xem Bài Viết</a>
+                    </li>
                 </ul>
             </div>
         </div>
