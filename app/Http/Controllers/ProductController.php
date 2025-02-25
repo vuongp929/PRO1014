@@ -150,16 +150,19 @@ class ProductController extends Controller
         return view('clients.search_results', compact('products'));
     }
     public function show($id)
-{
-    $product = Product::with('variants')->find($id);
+    {
+        // Lấy sản phẩm cùng với danh mục và các biến thể
+        $product = Product::with(['categories', 'variants'])->findOrFail($id);
 
-    if (!$product) {
-        return redirect()->route('client.home')->with('error', 'Sản phẩm không tồn tại.');
+        // Kiểm tra sản phẩm có tồn tại không
+        if (!$product) {
+            return redirect()->route('client.home')->with('error', 'Sản phẩm không tồn tại.');
+        }
+
+        // Chọn biến thể đầu tiên (nếu có)
+        $variant = $product->variants->first();
+
+        return view('clients.product_detail', compact('product', 'variant'));
     }
 
-    // Select the first variant as default
-    $variant = $product->variants->first();
-
-    return view('clients.product_detail', compact('product', 'variant'));
-}
 }

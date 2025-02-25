@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\Offer;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Exception;
 
 class OfferController extends Controller
@@ -24,13 +25,11 @@ class OfferController extends Controller
     {
         DB::beginTransaction();
         try {
-            // Lấy dữ liệu từ request
-            $code = strtoupper($request->input('code')); // Viết hoa mã giảm giá
+            $code = strtoupper($request->input('code'));
             $discount = $request->input('discount');
             $expires_at = $request->input('expires_at');
-            $is_active = $request->has('is_active') ? 1 : 0; // Nếu checkbox được chọn, set là 1, ngược lại là 0
+            $is_active = $request->has('is_active') ? 1 : 0;
 
-            // Tạo mã giảm giá
             Offer::create([
                 'code' => $code,
                 'discount' => $discount,
@@ -39,7 +38,7 @@ class OfferController extends Controller
             ]);
 
             DB::commit();
-            
+
             return redirect()->route('offers.index')->with('success', 'Mã khuyến mãi đã được tạo.');
         } catch (Exception $e) {
             DB::rollBack();
@@ -47,47 +46,47 @@ class OfferController extends Controller
         }
     }
 
-
     public function edit(Offer $offer)
     {
         return view('admins.offers.edit', compact('offer'));
     }
 
     public function update(Request $request, Offer $offer)
-{
-    DB::beginTransaction();
-    try {
-        // Validate dữ liệu đầu vào
-        $request->validate([
-            'code' => 'required|string|unique:offers,code,' . $offer->id,
-            'discount' => 'required|integer|min:1|max:100',
-            'expires_at' => 'nullable|date',
-            'is_active' => 'boolean'
-        ]);
+    {
+        DB::beginTransaction();
+        try {
+            // Debug dữ liệu gửi lên
+            Log::info('Request data:', $request->all()); // Bỏ dấu \
 
-        // Lấy dữ liệu từ request
-        $code = strtoupper($request->input('code')); // Viết hoa mã giảm giá
-        $discount = $request->input('discount');
-        $expires_at = $request->input('expires_at');
-        $is_active = $request->has('is_active') ? 1 : 0;
+            // Validate dữ liệu
+            $request->validate([
+                'code' => 'required|string|unique:offers,code,' . $offer->id,
+                'discount' => 'required|integer|min:1|max:100',
+                'expires_at' => 'nullable|date',
+            ]);
 
-        // Cập nhật dữ liệu mã giảm giá
-        $offer->update([
-            'code' => $code,
-            'discount' => $discount,
-            'expires_at' => $expires_at,
-            'is_active' => $is_active,
-        ]);
+            $code = strtoupper($request->input('code'));
+            $discount = $request->input('discount');
+            $expires_at = $request->input('expires_at');
+            $is_active = $request->has('is_active') ? 1 : 0;
 
-        DB::commit();
+            // Cập nhật mã giảm giá
+            $offer->update([
+                'code' => $code,
+                'discount' => $discount,
+                'expires_at' => $expires_at,
+                'is_active' => $is_active,
+            ]);
 
-        return redirect()->route('offers.index')->with('success', 'Mã khuyến mãi đã được cập nhật.');
-    } catch (Exception $e) {
-        DB::rollBack();
-        return back()->withErrors('Lỗi xảy ra khi cập nhật: ' . $e->getMessage());
+            DB::commit();
+
+            return redirect()->route('offers.index')->with('success', 'Mã khuyến mãi đã được cập nhật.');
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Update failed: ' . $e->getMessage()); // Bỏ dấu \
+            return back()->withErrors('Lỗi xảy ra khi cập nhật: ' . $e->getMessage());
+        }
     }
-}
-
 
     public function destroy(Offer $offer)
     {

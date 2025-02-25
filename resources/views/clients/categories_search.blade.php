@@ -3,6 +3,12 @@
 @section('title', 'Sản phẩm thuộc danh mục: ' . $category->name)
 
 @section('CSS')
+<style>
+.card a:hover {
+    text-decoration: underline;
+    color: red;
+}
+</style>
 <!-- Bạn có thể thêm CSS tùy chỉnh ở đây nếu cần -->
 @endsection
 
@@ -32,7 +38,7 @@
                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                 <input type="hidden" id="selected-size-{{ $product->id }}" name="size" value="{{ $product->variants->first()->id }}">
                                 <input type="hidden" name="redirect_url" value="{{ url()->current() }}">
-                                <!-- Nút chọn size (giá trị từ biến thể) --> 
+                                <!-- Nút chọn size (giá trị từ biến thể) -->
                                 <div class="size-buttons mb-2">
                                     @foreach ($product->variants as $variant)
                                         <button type="button" class="btn btn-outline-secondary btn-sm size-button" data-size-id="{{ $variant->id }}" data-price="{{ $variant->price }}" onclick="selectSize({{ $product->id }}, this)">
@@ -40,7 +46,7 @@
                                         </button>
                                     @endforeach
                                 </div>
-                                <!-- Giá sản phẩm --> 
+                                <!-- Giá sản phẩm -->
                                 <p class="price">
                                     Giá: <span id="product-price-{{ $product->id }}">{{ number_format($product->variants->first()->price, 0, ',', '.') }} VND</span>
                                 </p>
@@ -69,11 +75,11 @@
         sizeButtons.forEach(button => button.classList.remove('selected'));
         // Thêm class 'selected' cho nút được chọn
         buttonElement.classList.add('selected');
-        
+
         // Cập nhật giá sản phẩm hiển thị theo size được chọn
         const price = buttonElement.getAttribute('data-price');
         document.getElementById('product-price-' + productId).textContent = new Intl.NumberFormat().format(price) + ' VND';
-        
+
         // Cập nhật giá trị của input ẩn chứa id của biến thể đã chọn
         const sizeId = buttonElement.getAttribute('data-size-id');
         document.getElementById('selected-size-' + productId).value = sizeId;

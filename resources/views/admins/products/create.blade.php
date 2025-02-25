@@ -16,7 +16,6 @@
     .category-item input[type="checkbox"] {
         display: none; /* Ẩn checkbox */
     }
-
     .category-item .category-label {
         padding: 8px 15px;
         border-radius: 5px;
@@ -76,8 +75,8 @@
                                                     <p class="text-danger">{{ $message }}</p>
                                                 @enderror
                                             </div>
-                                            
-                                            
+
+
 
                                             <div class="mt-3">
                                                 <label for="name" class="form-label">Tên sản phẩm</label>
@@ -95,11 +94,11 @@
                                                 <div class="category-selection">
                                                     @foreach($categories as $category)
                                                         <div class="category-item">
-                                                            <input type="checkbox" 
-                                                                id="category_{{ $category->id }}" 
-                                                                name="category_ids[]" 
-                                                                value="{{ $category->id }}" 
-                                                                class="category-checkbox" 
+                                                            <input type="checkbox"
+                                                                id="category_{{ $category->id }}"
+                                                                name="category_ids[]"
+                                                                value="{{ $category->id }}"
+                                                                class="category-checkbox"
                                                                 {{ in_array($category->id, old('category_ids', [])) ? 'checked' : '' }}
                                                             />
                                                             <label for="category_{{ $category->id }}" class="category-label">{{ $category->name }}</label>
@@ -107,7 +106,7 @@
                                                     @endforeach
                                                 </div>
                                             </div>
-                                                                                                                                    
+
                                         </div>
 
                                             <div class="col-md-8">
@@ -144,7 +143,7 @@
                                                         <button type="button" id="add-variant">Thêm biến thể</button>
                                                     </div>
                                                 </div>
-                                                
+
                                             <div class="mt-3 text-center">
                                                 <button class="btn btn-primary" type="submit">Thêm mới</button>
                                             </div>

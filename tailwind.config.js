@@ -27,3 +27,14 @@ module.exports = {
     },
     plugins: [],
   }
+  module.exports = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#8357ae',
+          primaryHover: '#6a4390'
+        }
+      }
+    }
+  }
+

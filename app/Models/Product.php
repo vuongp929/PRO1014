@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Category;
 
 class Product extends Model
 {
@@ -39,6 +40,7 @@ class Product extends Model
     {
         return $this->belongsToMany(Order::class, 'order_product')
                     ->withPivot('quantity', 'price') // Nếu bảng trung gian có thêm cột
-                    ->withTimestamps(); // Nếu cần lấy thông tin thời gian thêm vào
+                    ->withTimestamps() // Nếu cần lấy thông tin thời gian thêm vào
+                    ->belongsTo(Category::class);
     }
 }

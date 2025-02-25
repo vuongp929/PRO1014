@@ -39,7 +39,7 @@
     <link href="{{ asset('assets/clients/pages/css/portfolio.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/clients/pages/css/slider.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/clients/pages/css/style-shop.css') }}" rel="stylesheet" type="text/css">
-    
+
     {{-- CSS riêng cho từng trang --}}
     @yield('CSS')
 </head>

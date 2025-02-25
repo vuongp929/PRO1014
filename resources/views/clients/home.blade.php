@@ -4,123 +4,61 @@
 
 @section('CSS')
     <link rel="stylesheet" href="{{ asset('assets/user/css/shop-index.css') }}">
-    {{-- <style>
-        .featured-products h2 {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .card {
-            border: none;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            background-color: transparent;
-            transition: transform 0.3s ease;
-            margin-bottom: 30px;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-        }
-
-        .card-img-top {
+    <style>
+        .banner {
+            position: relative;
             width: 100%;
-            height: 250px;
-            object-fit: cover;
+            height: 400px;
+            overflow: hidden;
             border-radius: 15px;
         }
 
-        .card-body {
-            padding: 15px;
+        .banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .banner-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             text-align: center;
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
         }
 
-        .card-title {
-            font-size: 1.2rem;
+        .banner-content h1 {
+            font-size: 2.5rem;
             font-weight: bold;
-            margin-bottom: 10px;
-            color: #8357ae;
         }
 
-        .price {
+        .banner-content p {
             font-size: 1.2rem;
-            font-weight: bold;
-            color: #8357ae;
-        }
-
-        /* Nút chọn size */
-        .size-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
             margin-top: 10px;
         }
 
-        .size-button {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 15px;
-            background-color: white;
-            font-size: 1rem;
-            cursor: pointer;
-            color: #555;
-            transition: all 0.3s ease;
-        }
-
-        .size-button.selected {
-            background-color: #8357ae;
+        .banner-content .btn {
+            margin-top: 15px;
+            background-color: #ff7f50;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1.2rem;
             color: white;
-            border-color: #8357ae;
+            text-decoration: none;
         }
 
-        .btn-primary {
-            background-color: #8357ae;
-            border-color: #8357ae;
-            border-radius: 15px;
-            padding: 12px;
-            font-size: 1.1rem;
-            color: white;
-            width: 100%;
-            transition: background-color 0.3s ease;
+        .banner-content .btn:hover {
+            background-color: #e67340;
         }
-
-        .btn-primary:hover {
-            background-color: #723e8a;
-        }
-
-        /* Responsive cho sản phẩm */
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
-
-        .col-md-3 {
-            flex: 0 0 23%;
-            box-sizing: border-box;
-            margin-bottom: 30px;
-        }
-
-        @media (max-width: 992px) {
-            .col-md-3 {
-                flex: 0 0 23%;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .col-md-3 {
-                flex: 0 0 50%;
-            }
-        }
-    </style> --}}
+    </style>
 @endsection
 
 @section('content')
-
 @if(session('success'))
     <div class="alert alert-success">
         {{ session('success') }}
@@ -129,7 +67,12 @@
 
 <div class="container">
     <div class="banner mb-5">
-        <img src="https://via.placeholder.com/1200x400" alt="Banner" class="img-fluid rounded">
+        <img src="https://teddy.vn/wp-content/uploads/2024/01/banner-thuong_DC.jpg" alt="Banner">
+        {{-- <div class="banner-content">
+            <h1>Chào mừng đến với cửa hàng gấu bông!</h1>
+            <p>Khám phá bộ sưu tập gấu bông dễ thương với giá tốt nhất.</p>
+            <a href="#" class="btn">Mua sắm ngay</a>
+        </div> --}}
     </div>
 
     <div class="featured-products">
@@ -168,7 +111,6 @@
                             </form>
                         </div>
                     </div>
-
                 </div>
             @endforeach
         </div>
@@ -178,42 +120,33 @@
 
 @section('JS')
 <script>
-    // Hàm chọn size và cập nhật giao diện
-
     document.addEventListener('DOMContentLoaded', function () {
-    // Lấy tất cả các form trong trang có class 'ajax-form'
-    const ajaxForms = document.querySelectorAll('form.ajax-form');
+        const ajaxForms = document.querySelectorAll('form.ajax-form');
 
-    ajaxForms.forEach(form => {
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            // Thu thập dữ liệu từ form
-            const formData = new FormData(form);
-            const actionUrl = form.action;
-
-            // Gửi AJAX request
-            fetch(actionUrl, {
-                method: form.method || 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                }
-            }).then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Thao tác thành công!');
-                    // Tải lại trang hoặc cập nhật giỏ hàng nếu cần
-                    if (data.redirect) {
-                        window.location.href = data.redirect;
+        ajaxForms.forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const actionUrl = form.action;
+                fetch(actionUrl, {
+                    method: form.method || 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                     }
-                } else {
-                    alert(data.message || 'Có lỗi xảy ra.');
-                }
-            }).catch(error => console.error('Lỗi AJAX:', error));
+                }).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Thao tác thành công!');
+                        if (data.redirect) {
+                            window.location.href = data.redirect;
+                        }
+                    } else {
+                        alert(data.message || 'Có lỗi xảy ra.');
+                    }
+                }).catch(error => console.error('Lỗi AJAX:', error));
+            });
         });
     });
-});
-
 </script>
 @endsection

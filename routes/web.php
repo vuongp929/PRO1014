@@ -57,6 +57,8 @@ Route::prefix('checkout')->group(function () {
     Route::post('/cart/apply-discount', [DiscountController::class, 'applyDiscount'])->name('cart.apply-discount');
 });
 
+
+
 // Payment VNPay
 Route::prefix('payment/vnpay')->group(function () {
     Route::get('/order/{orderId}', [PaymentController::class, 'createQRPayment'])->name('payment.vnpay.qr');
